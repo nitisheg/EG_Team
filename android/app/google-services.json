@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "5926029573",
+    "firebase_url": "https://elite-quiz-75fcf-default-rtdb.firebaseio.com",
+    "project_id": "elite-quiz-75fcf",
+    "storage_bucket": "elite-quiz-75fcf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:5926029573:android:785ae73974abc8283a8f6c",
+        "android_client_info": {
+          "package_name": "com.eglogics.quiz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "5926029573-ot15f202p95vtt7no4ugjd1q8vm0vkut.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eglogics.quiz",
+            "certificate_hash": "bf605887e32a846bef574d4974e591f9bea26e2e"
+          }
+        },
+        {
+          "client_id": "5926029573-9ph2c67l8576dcr1ekidqqn12u1i5fjk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7qdHH4aERX8nX2Q8wQmIvM5hmLgSK3yo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "5926029573-9ph2c67l8576dcr1ekidqqn12u1i5fjk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "5926029573-kb63pee8nnggllg0f7nevamsjqvl4fd4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.eglogics.quiz"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
