@@ -30,7 +30,9 @@ import 'package:flutterquiz/features/quiz/cubits/subcategory_cubit.dart';
 import 'package:flutterquiz/features/quiz/models/quiz_type.dart';
 import 'package:flutterquiz/features/system_config/cubits/system_config_cubit.dart';
 import 'package:flutterquiz/ui/screens/battle/create_or_join_screen.dart';
+import 'package:flutterquiz/ui/screens/home/widgets/activity_card.dart';
 import 'package:flutterquiz/ui/screens/home/widgets/all.dart';
+import 'package:flutterquiz/ui/screens/home/widgets/learn_and_explore.dart';
 import 'package:flutterquiz/ui/screens/profile/create_or_edit_profile_screen.dart';
 import 'package:flutterquiz/ui/widgets/all.dart';
 import 'package:flutterquiz/utils/extensions.dart';
@@ -68,7 +70,11 @@ class HomeScreen extends StatefulWidget {
   }
 }
 
-typedef ZoneType = ({String title, String img, String desc});
+typedef ZoneType = ({
+  String title,
+  String img,
+  String desc,
+});
 
 class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   bool get _isGuest => context.read<AuthCubit>().isGuest;
@@ -92,6 +98,29 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       title: 'selfChallenge',
       img: Assets.selfChallengeIcon,
       desc: 'challengeYourselfLbl'
+    ),
+  ];
+
+  final todayActivityZones = <ZoneType>[
+    (title: 'Quiz of the day', img: Assets.examQuizIcon, desc: '15 Question'),
+    (
+      title: 'Featured Quiz',
+      img: Assets.selfChallengeIcon,
+      desc: '12 Question'
+    ),
+    (title: 'Fun Friday', img: Assets.examQuizIcon, desc: '10 Question'),
+  ];
+
+  final learnAndExploreZones = <ZoneType>[
+    (
+      title: 'Frontend Development',
+      img: Assets.dailyQuizBanner,
+      desc: 'It is a long established fact that a reader will be...',
+    ),
+    (
+      title: 'Ai',
+      img: Assets.dailyQuizBanner,
+      desc: 'It is a long established fact that a reader will be...'
     ),
   ];
 
@@ -627,159 +656,206 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   late String _userName = context.tr('guest')!;
   late String _userProfileImg = Assets.profile('2.png');
 
-  Widget _buildProfileContainer() {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: GestureDetector(
-        onTap: _onTapProfile,
-        child: Container(
-          margin: EdgeInsets.only(
-            top: _statusBarPadding * .2,
-            left: hzMargin,
-            right: hzMargin,
-          ),
-          width: scrWidth,
-          child: LayoutBuilder(
-            builder: (_, constraint) {
-              final size = context;
-
-              return Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(3),
-                    width: constraint.maxWidth * 0.15,
-                    height: constraint.maxWidth * 0.15,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onTertiary
-                            .withValues(alpha: 0.3),
-                      ),
-                    ),
-                    child: QImage.circular(imageUrl: _userProfileImg),
-                  ),
-                  SizedBox(width: size.width * .03),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: constraint.maxWidth * 0.5,
-                        child: Text(
-                          '${context.tr(helloKey)!} ${_isGuest ? context.tr('guest')! : _userName}',
-                          maxLines: 1,
-                          style: _boldTextStyle,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Text(
-                        context.tr(letsPlay)!,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onTertiary
-                              .withValues(alpha: 0.3),
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-
-                  const Spacer(),
-
-                  /// LeaderBoard
-                  Container(
-                    width: size.width * 0.11,
-                    height: size.width * 0.11,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: IconButton(
-                      onPressed: _onTapLeaderboard,
-                      icon: _isGuest
-                          ? const Icon(
-                              Icons.login_rounded,
-                              color: Colors.white,
-                            )
-                          : QImage(
-                              imageUrl: Assets.leaderboardIcon,
-                              color: Colors.white,
-                              width: size.width * 0.08,
-                              height: size.width * 0.08,
-                            ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-
-                  /// Settings
-                  Container(
-                    width: size.width * 0.11,
-                    height: size.width * 0.11,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(Routes.settings);
-                      },
-                      icon: QImage(
-                        imageUrl: Assets.settingsIcon,
-                        color: Colors.white,
-                        width: size.width * 0.08,
-                        height: size.width * 0.08,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
+  // Widget _buildProfileContainer() {
+  //   return Align(
+  //     alignment: Alignment.topCenter,
+  //     child: GestureDetector(
+  //       onTap: _onTapProfile,
+  //       child: Container(
+  //         margin: EdgeInsets.only(
+  //           top: _statusBarPadding * .2,
+  //           left: hzMargin,
+  //           right: hzMargin,
+  //         ),
+  //         width: scrWidth,
+  //         child: LayoutBuilder(
+  //           builder: (_, constraint) {
+  //             final size = context;
+  //
+  //             return Row(
+  //               children: [
+  //                 Container(
+  //                   padding: const EdgeInsets.all(3),
+  //                   width: constraint.maxWidth * 0.15,
+  //                   height: constraint.maxWidth * 0.15,
+  //                   decoration: BoxDecoration(
+  //                     shape: BoxShape.circle,
+  //                     border: Border.all(
+  //                       color: Theme.of(context)
+  //                           .colorScheme
+  //                           .onTertiary
+  //                           .withValues(alpha: 0.3),
+  //                     ),
+  //                   ),
+  //                   child: QImage.circular(imageUrl: _userProfileImg),
+  //                 ),
+  //                 SizedBox(width: size.width * .03),
+  //                 Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   mainAxisAlignment: MainAxisAlignment.center,
+  //                   children: [
+  //                     Text(
+  //                       context.tr(welcome)!,
+  //                       style: const TextStyle(
+  //                         fontSize: 15,
+  //                         color: Colors.black,
+  //                         fontWeight: FontWeight.w500,
+  //                       ),
+  //                       maxLines: 1,
+  //                       overflow: TextOverflow.ellipsis,
+  //                     ),
+  //                     SizedBox(
+  //                       width: constraint.maxWidth * 0.5,
+  //                       child: Text(
+  //                         '${context.tr(helloKey)!} ${_isGuest ? context.tr('guest')! : _userName}',
+  //                         maxLines: 1,
+  //                         style: _boldTextStyle,
+  //                         overflow: TextOverflow.ellipsis,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //
+  //                 const Spacer(),
+  //
+  //                 /// LeaderBoard
+  //                 // Container(
+  //                 //   width: size.width * 0.11,
+  //                 //   height: size.width * 0.11,
+  //                 //   decoration: BoxDecoration(
+  //                 //     color: Theme.of(context).primaryColor,
+  //                 //     borderRadius: BorderRadius.circular(10),
+  //                 //   ),
+  //                 //   child: IconButton(
+  //                 //     onPressed: _onTapLeaderboard,
+  //                 //     icon: _isGuest
+  //                 //         ? const Icon(
+  //                 //             Icons.login_rounded,
+  //                 //             color: Colors.white,
+  //                 //           )
+  //                 //         : QImage(
+  //                 //             imageUrl: Assets.leaderboardIcon,
+  //                 //             color: Colors.white,
+  //                 //             width: size.width * 0.08,
+  //                 //             height: size.width * 0.08,
+  //                 //           ),
+  //                 //   ),
+  //                 // ),
+  //
+  //                 ///notification
+  //
+  //                 SizedBox(
+  //                   width: size.width * 0.11,
+  //                   height: size.width * 0.11,
+  //                   child: IconButton(
+  //                     onPressed: () {
+  //                       Navigator.of(context).pushNamed(Routes.notification);
+  //                     },
+  //                     icon: QImage(
+  //                       imageUrl: Assets.notificationAlarmIcon,
+  //                       width: size.width * 0.08,
+  //                       height: size.width * 0.08,
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 // const SizedBox(width: 2),
+  //                 const Spacer(),
+  //
+  //                 ///Coins
+  //
+  //                 Container(
+  //                   width: size.width * 0.16,
+  //                   height: size.height * 0.04,
+  //                   padding: const EdgeInsets.symmetric(horizontal: 5),
+  //                   decoration: BoxDecoration(
+  //                     color: Theme.of(context).primaryColor,
+  //                     borderRadius: BorderRadius.circular(15),
+  //                   ),
+  //                   child: Row(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       QImage(
+  //                         imageUrl: Assets.coins,
+  //                         width: size.width * 0.04,
+  //                         height: size.width * 0.03,
+  //                       ),
+  //                       const SizedBox(width: 6),
+  //                       Text(
+  //                         _userCoins,
+  //                         style: TextStyle(
+  //                           color: Colors.white,
+  //                           fontWeight: FontWeight.bold,
+  //                           fontSize: size.width * 0.0373,
+  //                         ),
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //
+  //                 /// Settings
+  //                 // Container(
+  //                 //   width: size.width * 0.11,
+  //                 //   height: size.width * 0.11,
+  //                 //   decoration: BoxDecoration(
+  //                 //     color: Theme.of(context).primaryColor,
+  //                 //     borderRadius: BorderRadius.circular(10),
+  //                 //   ),
+  //                 //   child: IconButton(
+  //                 //     onPressed: () {
+  //                 //       Navigator.of(context).pushNamed(Routes.settings);
+  //                 //     },
+  //                 //     icon: QImage(
+  //                 //       imageUrl: Assets.notificationAlarmIcon,
+  //                 //       color: Colors.white,
+  //                 //       width: size.width * 0.08,
+  //                 //       height: size.width * 0.08,
+  //                 //     ),
+  //                 //   ),
+  //                 // ),
+  //               ],
+  //             );
+  //           },
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _buildCategory() {
     return Column(
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: hzMargin),
-          child: Row(
-            children: [
-              Text(
-                context.tr('quizZone')!,
-                style: _boldTextStyle,
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: () {
-                  _isGuest
-                      ? _showLoginDialog()
-                      : Navigator.of(context).pushNamed(
-                          Routes.category,
-                          arguments: {'quizType': QuizTypes.quizZone},
-                        );
-                },
-                child: Text(
-                  context.tr(viewAllKey) ?? viewAllKey,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onTertiary
-                        .withValues(alpha: .6),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          // child: Row(
+          //   children: [
+          //     Text(
+          //       context.tr('quizZone')!,
+          //       style: _boldTextStyle,
+          //     ),
+          //     const Spacer(),
+          //     GestureDetector(
+          //       onTap: () {
+          //         _isGuest
+          //             ? _showLoginDialog()
+          //             : Navigator.of(context).pushNamed(
+          //                 Routes.category,
+          //                 arguments: {'quizType': QuizTypes.quizZone},
+          //               );
+          //       },
+          //       child: Text(
+          //         context.tr(viewAllKey) ?? viewAllKey,
+          //         style: TextStyle(
+          //           fontSize: 14,
+          //           fontWeight: FontWeight.w600,
+          //           color: Theme.of(context)
+          //               .colorScheme
+          //               .onTertiary
+          //               .withValues(alpha: .6),
+          //         ),
+          //       ),
+          //     ),
+          //   ],
+          // ),
         ),
         Wrap(
           children: [
@@ -788,19 +864,99 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               children: [
                 Positioned(
                   child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 36,
+                      horizontal: 13,
+                    ),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Theme.of(context).colorScheme.surface,
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(9),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.red.withOpacity(0.015),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                    margin: EdgeInsets.only(
-                      left: hzMargin,
-                      right: hzMargin,
-                      top: 10,
-                      bottom: 26,
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/images/daily_quiz_banner.png',
+                          width: 148,
+                          height: 85,
+                        ), // Replace with real image
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Row(
+                                children: [
+                                  Text(
+                                    'Daily Task',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Spacer(),
+                                  QImage(
+                                    imageUrl: Assets.playIcon,
+                                    width: 09,
+                                    height: 09,
+                                  ),
+                                ],
+                              ),
+                              const Text(
+                                '14 Questions',
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              const SizedBox(height: 4),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(22),
+                                child: LinearProgressIndicator(
+                                  value: 9 / 14,
+                                  backgroundColor: Colors.grey[300],
+                                  color: Colors.red,
+                                  minHeight: 6,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              const Row(
+                                children: [
+                                  Text(
+                                    'Progress',
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                  Spacer(),
+                                  Text('9/14', style: TextStyle(fontSize: 12)),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    width: context.width,
-                    child: quizZoneCategories(),
                   ),
+
+                  // child: Container(
+                  //   decoration: BoxDecoration(
+                  //     borderRadius: BorderRadius.circular(10),
+                  //     color: Theme.of(context).colorScheme.surface,
+                  //   ),
+                  //   margin: EdgeInsets.only(
+                  //     left: hzMargin,
+                  //     right: hzMargin,
+                  //     top: 10,
+                  //     bottom: 26,
+                  //   ),
+                  //   width: context.width,
+                  //   child: quizZoneCategories(),
+                  // ),
                 ),
 
                 /// Expand Arrow
@@ -846,8 +1002,311 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             ),
           ],
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                '“Success is not final, failure is not fatal, it is the courage to continue that counts.”',
+                style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              const Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Yesterday | Submitted by ',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    TextSpan(
+                      text: 'Aarav',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 36,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                  ),
+                  onPressed: () {
+                    // TODO: Add submit logic here
+                  },
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Submit Quote',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      QImage(
+                        imageUrl: Assets.penLineIcon,
+                        width: 17,
+                        height: 17,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
+  }
+
+  Widget _buildExamSelf() {
+    return examZones.isNotEmpty
+        ? Padding(
+            padding: EdgeInsets.only(
+              left: hzMargin,
+              right: hzMargin,
+              top: scrHeight * 0.04,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      context.tr(todayActivity) ?? selfExamZoneKey,
+                      style: _boldTextStyle,
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                      // onTap: onTapViewAll,
+                      child: Row(
+                        children: [
+                          Text(
+                            context.tr(viewAllKey) ?? viewAllKey,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.blue,
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 12,
+                            color: Colors.blue,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                GridView.count(
+                  crossAxisCount: 3,
+                  shrinkWrap: true,
+                  mainAxisSpacing: 20,
+                  padding: EdgeInsets.only(top: _statusBarPadding * 0.2),
+                  crossAxisSpacing: 20,
+                  physics: const NeverScrollableScrollPhysics(),
+                  // Generate 100 widgets that display their index in the List.
+                  children: List.generate(
+                    todayActivityZones.length,
+                    (i) => ActivityCard(
+                      onTap: () => _onPressedSelfExam(examZones[i].title),
+                      title: context.tr(todayActivityZones[i].title)!,
+                      desc: context.tr(todayActivityZones[i].desc)!,
+                      backgroundColor: Colors.white,
+                      borderColor: Colors.transparent,
+                      // img: examZones[i].img,
+                    ),
+                    // (i) => QuizGridCard(
+                    //   onTap: () => _onPressedSelfExam(examZones[i].title),
+                    //   title: context.tr(examZones[i].title)!,
+                    //   desc: context.tr(examZones[i].desc)!,
+                    //   img: examZones[i].img,
+                    // ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : const SizedBox();
+  }
+
+  Widget _buildLearnAndExplore() {
+    return learnAndExploreZones.isNotEmpty
+        ? Padding(
+            padding: EdgeInsets.only(
+              left: hzMargin,
+              right: hzMargin,
+              top: scrHeight * 0.04,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      context.tr('Learn & Explore') ?? 'Learn & Explore',
+                      style: _boldTextStyle,
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                      // onTap: onTapViewAllLearnExplore,
+                      child: Row(
+                        children: [
+                          Text(
+                            context.tr(viewAllKey) ?? viewAllKey,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.blue,
+                            ),
+                          ),
+                          const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 12,
+                            color: Colors.blue,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  mainAxisSpacing: 20,
+                  padding: EdgeInsets.only(top: _statusBarPadding * 0.2),
+                  crossAxisSpacing: 20,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: List.generate(
+                    learnAndExploreZones.length,
+                    (i) => LearnAndExploreCard(
+                      // onTap: () => _onPressedLearnExplore(todayActivityZones[i].title),
+                      img: learnAndExploreZones[i].img,
+                      title: context.tr(learnAndExploreZones[i].title)!,
+                      desc: context.tr(learnAndExploreZones[i].desc)!,
+                      // modules: context.tr(learnAndExploreZones[i].desc)!,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : const SizedBox();
+  }
+
+  Widget _buildBattle() {
+    return battleZones.isNotEmpty
+        ? Padding(
+            padding: EdgeInsets.only(
+              left: hzMargin,
+              right: hzMargin,
+              top: scrHeight * 0.02,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Zone Title: Battle
+                // Text(
+                //   context.tr(battleOfTheDayKey) ?? battleOfTheDayKey, //
+                //   style: _boldTextStyle,
+                // ),
+
+                /// Categories
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: _statusBarPadding * 0.2,
+                  ),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 36,
+                      horizontal: 13,
+                    ),
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black12,
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(11),
+                      color: Colors.transparent,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Row(
+                          children: [
+                            Text(
+                              'Battle’s Of The Day\n1-on-1 Battle Mode',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Spacer(),
+                            QImage(
+                              imageUrl: Assets.trophyIcon,
+                              width: 40,
+                              height: 40,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        const Text('Challenge your peers & win extra coins!'),
+                        const SizedBox(height: 12),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(context).primaryColor,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                            ),
+                          ),
+                          onPressed: () {
+                            // TODO: Start challenge logic
+                          },
+                          child: const Text(
+                            'Start a Challenge',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : const SizedBox();
   }
 
   Widget quizZoneCategories() {
@@ -1044,541 +1503,541 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
   }
 
-  Widget _buildBattle() {
-    return battleZones.isNotEmpty
-        ? Padding(
-            padding: EdgeInsets.only(
-              left: hzMargin,
-              right: hzMargin,
-              top: scrHeight * 0.03,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// Zone Title: Battle
-                Text(
-                  context.tr(battleOfTheDayKey) ?? battleOfTheDayKey, //
-                  style: _boldTextStyle,
-                ),
+  // Widget _buildBattle() {
+  //   return battleZones.isNotEmpty
+  //       ? Padding(
+  //           padding: EdgeInsets.only(
+  //             left: hzMargin,
+  //             right: hzMargin,
+  //             top: scrHeight * 0.03,
+  //           ),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               /// Zone Title: Battle
+  //               Text(
+  //                 context.tr(battleOfTheDayKey) ?? battleOfTheDayKey, //
+  //                 style: _boldTextStyle,
+  //               ),
+  //
+  //               /// Categories
+  //               GridView.count(
+  //                 // Create a grid with 2 columns. If you change the scrollDirection to
+  //                 // horizontal, this produces 2 rows.
+  //                 crossAxisCount: 2,
+  //                 shrinkWrap: true,
+  //                 mainAxisSpacing: 20,
+  //                 padding: EdgeInsets.only(top: _statusBarPadding * 0.2),
+  //                 crossAxisSpacing: 20,
+  //                 physics: const NeverScrollableScrollPhysics(),
+  //                 // Generate 100 widgets that display their index in the List.
+  //                 children: List.generate(
+  //                   battleZones.length,
+  //                   (i) => QuizGridCard(
+  //                     onTap: () => _onPressedBattle(battleZones[i].title),
+  //                     title: context.tr(battleZones[i].title)!,
+  //                     desc: context.tr(battleZones[i].desc)!,
+  //                     img: battleZones[i].img,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         )
+  //       : const SizedBox();
+  // }
 
-                /// Categories
-                GridView.count(
-                  // Create a grid with 2 columns. If you change the scrollDirection to
-                  // horizontal, this produces 2 rows.
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  mainAxisSpacing: 20,
-                  padding: EdgeInsets.only(top: _statusBarPadding * 0.2),
-                  crossAxisSpacing: 20,
-                  physics: const NeverScrollableScrollPhysics(),
-                  // Generate 100 widgets that display their index in the List.
-                  children: List.generate(
-                    battleZones.length,
-                    (i) => QuizGridCard(
-                      onTap: () => _onPressedBattle(battleZones[i].title),
-                      title: context.tr(battleZones[i].title)!,
-                      desc: context.tr(battleZones[i].desc)!,
-                      img: battleZones[i].img,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        : const SizedBox();
-  }
+  // Widget _buildExamSelf() {
+  //   return examZones.isNotEmpty
+  //       ? Padding(
+  //           padding: EdgeInsets.only(
+  //             left: hzMargin,
+  //             right: hzMargin,
+  //             top: scrHeight * 0.04,
+  //           ),
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               Text(
+  //                 context.tr(selfExamZoneKey) ?? selfExamZoneKey,
+  //                 style: _boldTextStyle,
+  //               ),
+  //               GridView.count(
+  //                 crossAxisCount: 2,
+  //                 shrinkWrap: true,
+  //                 mainAxisSpacing: 20,
+  //                 padding: EdgeInsets.only(top: _statusBarPadding * 0.2),
+  //                 crossAxisSpacing: 20,
+  //                 physics: const NeverScrollableScrollPhysics(),
+  //                 // Generate 100 widgets that display their index in the List.
+  //                 children: List.generate(
+  //                   examZones.length,
+  //                   (i) => QuizGridCard(
+  //                     onTap: () => _onPressedSelfExam(examZones[i].title),
+  //                     title: context.tr(examZones[i].title)!,
+  //                     desc: context.tr(examZones[i].desc)!,
+  //                     img: examZones[i].img,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         )
+  //       : const SizedBox();
+  // }
 
-  Widget _buildExamSelf() {
-    return examZones.isNotEmpty
-        ? Padding(
-            padding: EdgeInsets.only(
-              left: hzMargin,
-              right: hzMargin,
-              top: scrHeight * 0.04,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  context.tr(selfExamZoneKey) ?? selfExamZoneKey,
-                  style: _boldTextStyle,
-                ),
-                GridView.count(
-                  crossAxisCount: 2,
-                  shrinkWrap: true,
-                  mainAxisSpacing: 20,
-                  padding: EdgeInsets.only(top: _statusBarPadding * 0.2),
-                  crossAxisSpacing: 20,
-                  physics: const NeverScrollableScrollPhysics(),
-                  // Generate 100 widgets that display their index in the List.
-                  children: List.generate(
-                    examZones.length,
-                    (i) => QuizGridCard(
-                      onTap: () => _onPressedSelfExam(examZones[i].title),
-                      title: context.tr(examZones[i].title)!,
-                      desc: context.tr(examZones[i].desc)!,
-                      img: examZones[i].img,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
-        : const SizedBox();
-  }
+  // Widget _buildZones() {
+  //   return Padding(
+  //     padding: EdgeInsets.only(
+  //       left: hzMargin,
+  //       right: hzMargin,
+  //       top: scrHeight * 0.04,
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         if (playDifferentZones.isNotEmpty)
+  //           Text(
+  //             context.tr(playDifferentZoneKey) ?? playDifferentZoneKey,
+  //             style: _boldTextStyle,
+  //           )
+  //         else
+  //           const SizedBox(),
+  //         GridView.count(
+  //           crossAxisCount: 2,
+  //           shrinkWrap: true,
+  //           mainAxisSpacing: 20,
+  //           padding: EdgeInsets.only(
+  //             top: _statusBarPadding * 0.2,
+  //             bottom: _statusBarPadding * 0.6,
+  //           ),
+  //           crossAxisSpacing: 20,
+  //           physics: const NeverScrollableScrollPhysics(),
+  //           children: List.generate(
+  //             playDifferentZones.length,
+  //             (i) => QuizGridCard(
+  //               onTap: () => _onPressedZone(playDifferentZones[i].title),
+  //               title: context.tr(playDifferentZones[i].title)!,
+  //               desc: context.tr(playDifferentZones[i].desc)!,
+  //               img: playDifferentZones[i].img,
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  Widget _buildZones() {
-    return Padding(
-      padding: EdgeInsets.only(
-        left: hzMargin,
-        right: hzMargin,
-        top: scrHeight * 0.04,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (playDifferentZones.isNotEmpty)
-            Text(
-              context.tr(playDifferentZoneKey) ?? playDifferentZoneKey,
-              style: _boldTextStyle,
-            )
-          else
-            const SizedBox(),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            mainAxisSpacing: 20,
-            padding: EdgeInsets.only(
-              top: _statusBarPadding * 0.2,
-              bottom: _statusBarPadding * 0.6,
-            ),
-            crossAxisSpacing: 20,
-            physics: const NeverScrollableScrollPhysics(),
-            children: List.generate(
-              playDifferentZones.length,
-              (i) => QuizGridCard(
-                onTap: () => _onPressedZone(playDifferentZones[i].title),
-                title: context.tr(playDifferentZones[i].title)!,
-                desc: context.tr(playDifferentZones[i].desc)!,
-                img: playDifferentZones[i].img,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildDailyAds() {
+  //   var clicked = false;
+  //   return BlocBuilder<RewardedAdCubit, RewardedAdState>(
+  //     builder: (context, state) {
+  //       if (state is RewardedAdLoaded &&
+  //           context.read<UserDetailsCubit>().isDailyAdAvailable) {
+  //         return GestureDetector(
+  //           onTap: () async {
+  //             if (!clicked) {
+  //               await context
+  //                   .read<RewardedAdCubit>()
+  //                   .showDailyAd(context: context);
+  //               clicked = true;
+  //             }
+  //           },
+  //           child: Container(
+  //             margin: EdgeInsets.only(
+  //               left: hzMargin,
+  //               right: hzMargin,
+  //               top: scrHeight * 0.02,
+  //             ),
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.circular(8),
+  //               color: Theme.of(context).colorScheme.surface,
+  //             ),
+  //             width: scrWidth,
+  //             height: scrWidth * 0.3,
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //               children: [
+  //                 DecoratedBox(
+  //                   decoration: BoxDecoration(
+  //                     color: Theme.of(context).primaryColor,
+  //                     shape: BoxShape.circle,
+  //                   ),
+  //                   child: SvgPicture.asset(
+  //                     Assets.dailyCoins,
+  //                     width: scrWidth * .23,
+  //                     height: scrWidth * .23,
+  //                   ),
+  //                 ),
+  //                 Column(
+  //                   mainAxisSize: MainAxisSize.min,
+  //                   mainAxisAlignment: MainAxisAlignment.center,
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     ConstrainedBox(
+  //                       constraints: const BoxConstraints(maxWidth: 250),
+  //                       child: Text(
+  //                         context.tr('dailyAdsTitle')!,
+  //                         maxLines: 2,
+  //                         style: TextStyle(
+  //                           fontWeight: FontWeights.bold,
+  //                           fontSize: 16,
+  //                           color: Theme.of(context).colorScheme.onTertiary,
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     const SizedBox(height: 5),
+  //                     Text(
+  //                       "${context.tr("get")!} "
+  //                       '${_sysConfigCubit.coinsPerDailyAdView} '
+  //                       "${context.tr("dailyAdsDesc")!}",
+  //                       style: TextStyle(
+  //                         fontWeight: FontWeights.regular,
+  //                         fontSize: 14,
+  //                         color: Theme.of(context)
+  //                             .colorScheme
+  //                             .onTertiary
+  //                             .withValues(alpha: .6),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         );
+  //       }
+  //
+  //       return const SizedBox.shrink();
+  //     },
+  //   );
+  // }
 
-  Widget _buildDailyAds() {
-    var clicked = false;
-    return BlocBuilder<RewardedAdCubit, RewardedAdState>(
-      builder: (context, state) {
-        if (state is RewardedAdLoaded &&
-            context.read<UserDetailsCubit>().isDailyAdAvailable) {
-          return GestureDetector(
-            onTap: () async {
-              if (!clicked) {
-                await context
-                    .read<RewardedAdCubit>()
-                    .showDailyAd(context: context);
-                clicked = true;
-              }
-            },
-            child: Container(
-              margin: EdgeInsets.only(
-                left: hzMargin,
-                right: hzMargin,
-                top: scrHeight * 0.02,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Theme.of(context).colorScheme.surface,
-              ),
-              width: scrWidth,
-              height: scrWidth * 0.3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      shape: BoxShape.circle,
-                    ),
-                    child: SvgPicture.asset(
-                      Assets.dailyCoins,
-                      width: scrWidth * .23,
-                      height: scrWidth * .23,
-                    ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 250),
-                        child: Text(
-                          context.tr('dailyAdsTitle')!,
-                          maxLines: 2,
-                          style: TextStyle(
-                            fontWeight: FontWeights.bold,
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.onTertiary,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        "${context.tr("get")!} "
-                        '${_sysConfigCubit.coinsPerDailyAdView} '
-                        "${context.tr("dailyAdsDesc")!}",
-                        style: TextStyle(
-                          fontWeight: FontWeights.regular,
-                          fontSize: 14,
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onTertiary
-                              .withValues(alpha: .6),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        }
-
-        return const SizedBox.shrink();
-      },
-    );
-  }
-
-  Widget _buildLiveContestSection() {
-    void onTapViewAll() {
-      if (_sysConfigCubit.isContestEnabled) {
-        Navigator.of(context).pushNamed(Routes.contest);
-      } else {
-        UiUtils.showSnackBar(
-          context.tr(currentlyNotAvailableKey)!,
-          context,
-        );
-      }
-    }
-
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: hzMargin, vertical: 10),
-      child: Column(
-        children: [
-          /// Contest Section Title
-          Row(
-            children: [
-              Text(
-                context.tr(contest) ?? contest,
-                style: _boldTextStyle,
-              ),
-              const Spacer(),
-              GestureDetector(
-                onTap: onTapViewAll,
-                child: Text(
-                  context.tr(viewAllKey) ?? viewAllKey,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onTertiary
-                        .withValues(alpha: 0.6),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-
-          /// Contest Card
-          BlocConsumer<ContestCubit, ContestState>(
-            bloc: context.read<ContestCubit>(),
-            listener: (context, state) {
-              if (state is ContestFailure) {
-                if (state.errorMessage == errorCodeUnauthorizedAccess) {
-                  showAlreadyLoggedInDialog(context);
-                }
-              }
-            },
-            builder: (context, state) {
-              if (state is ContestFailure) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  height: 100,
-                  alignment: Alignment.center,
-                  child: Text(
-                    context.tr(
-                      convertErrorCodeToLanguageKey(state.errorMessage),
-                    )!,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeights.regular,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    maxLines: 2,
-                  ),
-                );
-              }
-
-              if (state is ContestSuccess) {
-                final colorScheme = Theme.of(context).colorScheme;
-                final textStyle = GoogleFonts.nunito(
-                  textStyle: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeights.regular,
-                    color: colorScheme.onTertiary.withValues(alpha: 0.6),
-                  ),
-                );
-
-                ///
-                final live = state.contestList.live;
-
-                /// No Contest
-                if (live.errorMessage.isNotEmpty) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: colorScheme.surface,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    height: 100,
-                    alignment: Alignment.center,
-                    child: Text(
-                      context.tr(
-                        convertErrorCodeToLanguageKey(live.errorMessage),
-                      )!,
-                      style: _boldTextStyle.copyWith(
-                        fontSize: 16,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  );
-                }
-
-                final contest = live.contestDetails.first;
-                final entryFee = int.parse(contest.entry!);
-
-                void onTapPlayNow() {
-                  final userDetailsCubit = context.read<UserDetailsCubit>();
-
-                  if (int.parse(userDetailsCubit.getCoins()!) >= entryFee) {
-                    context.read<UpdateScoreAndCoinsCubit>().updateCoins(
-                          coins: entryFee,
-                          addCoin: false,
-                          title: playedContestKey,
-                        );
-                    userDetailsCubit.updateCoins(
-                      addCoin: false,
-                      coins: entryFee,
-                    );
-
-                    Navigator.of(context).pushNamed(
-                      Routes.quiz,
-                      arguments: {
-                        'numberOfPlayer': 1,
-                        'quizType': QuizTypes.contest,
-                        'contestId': contest.id,
-                      },
-                    );
-                  } else {
-                    showNotEnoughCoinsDialog(context);
-                  }
-                }
-
-                return Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.transparent,
-                    boxShadow: [
-                      BoxShadow(
-                        offset: Offset(0, 5),
-                        blurRadius: 5,
-                        color: Colors.black12,
-                      ),
-                    ],
-                    borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(99999),
-                    ),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: colorScheme.surface,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    padding: const EdgeInsets.all(12.5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            /// Contest Image
-                            Container(
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                  color:
-                                      Theme.of(context).scaffoldBackgroundColor,
-                                ),
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: QImage(
-                                  imageUrl: contest.image!,
-                                  height: 45,
-                                  width: 45,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-
-                            /// Contest Name & Description
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    contest.name.toString(),
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    style: _boldTextStyle.copyWith(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  Text(
-                                    contest.description.toString(),
-                                    softWrap: true,
-                                    textAlign: TextAlign.left,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    style: textStyle,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-
-                        ///
-                        Column(
-                          // runSpacing: 10,
-                          // spacing: 15,
-                          // crossAxisAlignment: WrapCrossAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// Entry Fees
-                                Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: context.tr('entryFeesLbl'),
-                                      ),
-                                      const TextSpan(text: ' : '),
-                                      TextSpan(
-                                        text:
-                                            "$entryFee ${context.tr("coinsLbl")!}",
-                                        style: textStyle.copyWith(
-                                          color: colorScheme.onTertiary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  style: textStyle,
-                                ),
-                                const SizedBox(height: 5),
-
-                                /// Ends on
-                                Text.rich(
-                                  style: textStyle,
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(
-                                        text: context.tr('endsOnLbl'),
-                                      ),
-                                      const TextSpan(text: ' : '),
-                                      TextSpan(
-                                        text: '${contest.endDate}  |  ',
-                                        style: textStyle.copyWith(
-                                          color: colorScheme.onTertiary,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: contest.participants.toString(),
-                                        style: textStyle.copyWith(
-                                          color: colorScheme.onTertiary,
-                                        ),
-                                      ),
-                                      const TextSpan(text: ' : '),
-                                      TextSpan(
-                                        text: context.tr(
-                                          'playersLbl',
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 15),
-
-                            /// Play Now
-                            GestureDetector(
-                              onTap: onTapPlayNow,
-                              child: Container(
-                                width: double.maxFinite,
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8,
-                                  horizontal: 5,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color:
-                                      Theme.of(context).scaffoldBackgroundColor,
-                                ),
-                                child: Text(
-                                  context.tr('playnowLbl')!,
-                                  maxLines: 1,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              }
-
-              return const Center(child: CircularProgressContainer());
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildLiveContestSection() {
+  //   void onTapViewAll() {
+  //     if (_sysConfigCubit.isContestEnabled) {
+  //       Navigator.of(context).pushNamed(Routes.contest);
+  //     } else {
+  //       UiUtils.showSnackBar(
+  //         context.tr(currentlyNotAvailableKey)!,
+  //         context,
+  //       );
+  //     }
+  //   }
+  //
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(horizontal: hzMargin, vertical: 10),
+  //     child: Column(
+  //       children: [
+  //         /// Contest Section Title
+  //         Row(
+  //           children: [
+  //             Text(
+  //               context.tr(contest) ?? contest,
+  //               style: _boldTextStyle,
+  //             ),
+  //             const Spacer(),
+  //             GestureDetector(
+  //               onTap: onTapViewAll,
+  //               child: Text(
+  //                 context.tr(viewAllKey) ?? viewAllKey,
+  //                 style: TextStyle(
+  //                   fontSize: 14,
+  //                   fontWeight: FontWeight.w600,
+  //                   color: Theme.of(context)
+  //                       .colorScheme
+  //                       .onTertiary
+  //                       .withValues(alpha: 0.6),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         const SizedBox(height: 10),
+  //
+  //         /// Contest Card
+  //         BlocConsumer<ContestCubit, ContestState>(
+  //           bloc: context.read<ContestCubit>(),
+  //           listener: (context, state) {
+  //             if (state is ContestFailure) {
+  //               if (state.errorMessage == errorCodeUnauthorizedAccess) {
+  //                 showAlreadyLoggedInDialog(context);
+  //               }
+  //             }
+  //           },
+  //           builder: (context, state) {
+  //             if (state is ContestFailure) {
+  //               return Container(
+  //                 decoration: BoxDecoration(
+  //                   color: Theme.of(context).colorScheme.surface,
+  //                   borderRadius: BorderRadius.circular(10),
+  //                 ),
+  //                 height: 100,
+  //                 alignment: Alignment.center,
+  //                 child: Text(
+  //                   context.tr(
+  //                     convertErrorCodeToLanguageKey(state.errorMessage),
+  //                   )!,
+  //                   textAlign: TextAlign.center,
+  //                   style: TextStyle(
+  //                     fontSize: 16,
+  //                     fontWeight: FontWeights.regular,
+  //                     color: Theme.of(context).primaryColor,
+  //                   ),
+  //                   maxLines: 2,
+  //                 ),
+  //               );
+  //             }
+  //
+  //             if (state is ContestSuccess) {
+  //               final colorScheme = Theme.of(context).colorScheme;
+  //               final textStyle = GoogleFonts.nunito(
+  //                 textStyle: TextStyle(
+  //                   fontSize: 14,
+  //                   fontWeight: FontWeights.regular,
+  //                   color: colorScheme.onTertiary.withValues(alpha: 0.6),
+  //                 ),
+  //               );
+  //
+  //               ///
+  //               final live = state.contestList.live;
+  //
+  //               /// No Contest
+  //               if (live.errorMessage.isNotEmpty) {
+  //                 return Container(
+  //                   decoration: BoxDecoration(
+  //                     color: colorScheme.surface,
+  //                     borderRadius: BorderRadius.circular(10),
+  //                   ),
+  //                   height: 100,
+  //                   alignment: Alignment.center,
+  //                   child: Text(
+  //                     context.tr(
+  //                       convertErrorCodeToLanguageKey(live.errorMessage),
+  //                     )!,
+  //                     style: _boldTextStyle.copyWith(
+  //                       fontSize: 16,
+  //                       color: Theme.of(context).primaryColor,
+  //                     ),
+  //                   ),
+  //                 );
+  //               }
+  //
+  //               final contest = live.contestDetails.first;
+  //               final entryFee = int.parse(contest.entry!);
+  //
+  //               void onTapPlayNow() {
+  //                 final userDetailsCubit = context.read<UserDetailsCubit>();
+  //
+  //                 if (int.parse(userDetailsCubit.getCoins()!) >= entryFee) {
+  //                   context.read<UpdateScoreAndCoinsCubit>().updateCoins(
+  //                         coins: entryFee,
+  //                         addCoin: false,
+  //                         title: playedContestKey,
+  //                       );
+  //                   userDetailsCubit.updateCoins(
+  //                     addCoin: false,
+  //                     coins: entryFee,
+  //                   );
+  //
+  //                   Navigator.of(context).pushNamed(
+  //                     Routes.quiz,
+  //                     arguments: {
+  //                       'numberOfPlayer': 1,
+  //                       'quizType': QuizTypes.contest,
+  //                       'contestId': contest.id,
+  //                     },
+  //                   );
+  //                 } else {
+  //                   showNotEnoughCoinsDialog(context);
+  //                 }
+  //               }
+  //
+  //               return Container(
+  //                 decoration: const BoxDecoration(
+  //                   color: Colors.transparent,
+  //                   boxShadow: [
+  //                     BoxShadow(
+  //                       offset: Offset(0, 5),
+  //                       blurRadius: 5,
+  //                       color: Colors.black12,
+  //                     ),
+  //                   ],
+  //                   borderRadius: BorderRadius.vertical(
+  //                     bottom: Radius.circular(99999),
+  //                   ),
+  //                 ),
+  //                 child: Container(
+  //                   decoration: BoxDecoration(
+  //                     color: colorScheme.surface,
+  //                     borderRadius: BorderRadius.circular(10),
+  //                   ),
+  //                   padding: const EdgeInsets.all(12.5),
+  //                   child: Column(
+  //                     crossAxisAlignment: CrossAxisAlignment.start,
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       Row(
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           /// Contest Image
+  //                           Container(
+  //                             padding: const EdgeInsets.all(5),
+  //                             decoration: BoxDecoration(
+  //                               color: Colors.transparent,
+  //                               borderRadius: BorderRadius.circular(10),
+  //                               border: Border.all(
+  //                                 color:
+  //                                     Theme.of(context).scaffoldBackgroundColor,
+  //                               ),
+  //                             ),
+  //                             child: ClipRRect(
+  //                               borderRadius: BorderRadius.circular(5),
+  //                               child: QImage(
+  //                                 imageUrl: contest.image!,
+  //                                 height: 45,
+  //                                 width: 45,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           const SizedBox(width: 8),
+  //
+  //                           /// Contest Name & Description
+  //                           Expanded(
+  //                             child: Column(
+  //                               crossAxisAlignment: CrossAxisAlignment.start,
+  //                               children: [
+  //                                 Text(
+  //                                   contest.name.toString(),
+  //                                   textAlign: TextAlign.left,
+  //                                   overflow: TextOverflow.ellipsis,
+  //                                   maxLines: 2,
+  //                                   style: _boldTextStyle.copyWith(
+  //                                     fontSize: 16,
+  //                                   ),
+  //                                 ),
+  //                                 Text(
+  //                                   contest.description.toString(),
+  //                                   softWrap: true,
+  //                                   textAlign: TextAlign.left,
+  //                                   overflow: TextOverflow.ellipsis,
+  //                                   maxLines: 2,
+  //                                   style: textStyle,
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                       const SizedBox(height: 10),
+  //
+  //                       ///
+  //                       Column(
+  //                         // runSpacing: 10,
+  //                         // spacing: 15,
+  //                         // crossAxisAlignment: WrapCrossAlignment.center,
+  //                         crossAxisAlignment: CrossAxisAlignment.start,
+  //                         children: [
+  //                           Column(
+  //                             crossAxisAlignment: CrossAxisAlignment.start,
+  //                             children: [
+  //                               /// Entry Fees
+  //                               Text.rich(
+  //                                 TextSpan(
+  //                                   children: [
+  //                                     TextSpan(
+  //                                       text: context.tr('entryFeesLbl'),
+  //                                     ),
+  //                                     const TextSpan(text: ' : '),
+  //                                     TextSpan(
+  //                                       text:
+  //                                           "$entryFee ${context.tr("coinsLbl")!}",
+  //                                       style: textStyle.copyWith(
+  //                                         color: colorScheme.onTertiary,
+  //                                       ),
+  //                                     ),
+  //                                   ],
+  //                                 ),
+  //                                 style: textStyle,
+  //                               ),
+  //                               const SizedBox(height: 5),
+  //
+  //                               /// Ends on
+  //                               Text.rich(
+  //                                 style: textStyle,
+  //                                 TextSpan(
+  //                                   children: [
+  //                                     TextSpan(
+  //                                       text: context.tr('endsOnLbl'),
+  //                                     ),
+  //                                     const TextSpan(text: ' : '),
+  //                                     TextSpan(
+  //                                       text: '${contest.endDate}  |  ',
+  //                                       style: textStyle.copyWith(
+  //                                         color: colorScheme.onTertiary,
+  //                                       ),
+  //                                     ),
+  //                                     TextSpan(
+  //                                       text: contest.participants.toString(),
+  //                                       style: textStyle.copyWith(
+  //                                         color: colorScheme.onTertiary,
+  //                                       ),
+  //                                     ),
+  //                                     const TextSpan(text: ' : '),
+  //                                     TextSpan(
+  //                                       text: context.tr(
+  //                                         'playersLbl',
+  //                                       ),
+  //                                     ),
+  //                                   ],
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           ),
+  //
+  //                           const SizedBox(height: 15),
+  //
+  //                           /// Play Now
+  //                           GestureDetector(
+  //                             onTap: onTapPlayNow,
+  //                             child: Container(
+  //                               width: double.maxFinite,
+  //                               padding: const EdgeInsets.symmetric(
+  //                                 vertical: 8,
+  //                                 horizontal: 5,
+  //                               ),
+  //                               decoration: BoxDecoration(
+  //                                 borderRadius: BorderRadius.circular(8),
+  //                                 color:
+  //                                     Theme.of(context).scaffoldBackgroundColor,
+  //                               ),
+  //                               child: Text(
+  //                                 context.tr('playnowLbl')!,
+  //                                 maxLines: 1,
+  //                                 textAlign: TextAlign.center,
+  //                                 style: TextStyle(
+  //                                   fontSize: 16,
+  //                                   fontWeight: FontWeight.bold,
+  //                                   color: Theme.of(context).primaryColor,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     ],
+  //                   ),
+  //                 ),
+  //               );
+  //             }
+  //
+  //             return const Center(child: CircularProgressContainer());
+  //           },
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   String _userRank = '0';
   String _userCoins = '0';
@@ -1634,12 +2093,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
               },
               child: ListView(
                 children: [
-                  _buildProfileContainer(),
-                  UserAchievements(
-                    userRank: _userRank,
-                    userCoins: _userCoins,
-                    userScore: _userScore,
-                  ),
+                  // _buildProfileContainer(),
+                  // UserAchievements(
+                  //   userRank: _userRank,
+                  //   userCoins: _userCoins,
+                  //   userScore: _userScore,
+                  // ),
                   const SizedBox(height: 1),
 
                   // Conditional Sparkle Animation or Sad Sparkle
@@ -1680,14 +2139,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   if (_sysConfigCubit.isAdsEnable &&
                       _sysConfigCubit.isDailyAdsEnabled &&
                       !_isGuest) ...[
-                    _buildDailyAds(),
+                    // _buildDailyAds(),
                   ],
                   if (_sysConfigCubit.isContestEnabled && !_isGuest) ...[
-                    _buildLiveContestSection(),
+                    // _buildLiveContestSection(),
                   ],
-                  _buildBattle(),
                   _buildExamSelf(),
-                  _buildZones(),
+                  _buildLearnAndExplore(),
+                  _buildBattle(),
+                  // _buildZones(),
                 ],
               ),
             ),
@@ -1716,11 +2176,123 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     );
 
     return Scaffold(
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: SafeArea(
+          child: Container(
+            margin: EdgeInsets.only(
+              top: _statusBarPadding * .2,
+              left: hzMargin,
+              right: hzMargin,
+            ),
+            width: double.infinity,
+            child: LayoutBuilder(
+              builder: (context, constraint) {
+                final size = MediaQuery.of(context).size;
+
+                return Row(
+                  children: [
+                    GestureDetector(
+                      onTap: _onTapProfile,
+                      child: Container(
+                        padding: const EdgeInsets.all(3),
+                        width: constraint.maxWidth * 0.15,
+                        height: constraint.maxWidth * 0.15,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onTertiary
+                                .withOpacity(0.3),
+                          ),
+                        ),
+                        child: QImage.circular(imageUrl: _userProfileImg),
+                      ),
+                    ),
+                    SizedBox(width: size.width * .03),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          context.tr(welcome)!,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        SizedBox(
+                          width: constraint.maxWidth * 0.5,
+                          child: Text(
+                            '${context.tr(helloKey)!} ${_isGuest ? context.tr('guest')! : _userName}',
+                            maxLines: 1,
+                            style: _boldTextStyle,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Spacer(),
+
+                    /// Notification Button
+                    SizedBox(
+                      width: size.width * 0.11,
+                      height: size.width * 0.11,
+                      child: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pushNamed(Routes.notification);
+                        },
+                        icon: QImage(
+                          imageUrl: Assets.notificationAlarmIcon,
+                          width: size.width * 0.08,
+                          height: size.width * 0.08,
+                        ),
+                      ),
+                    ),
+
+                    /// Coins
+                    Container(
+                      width: size.width * 0.16,
+                      height: size.height * 0.04,
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          QImage(
+                            imageUrl: Assets.coins,
+                            width: size.width * 0.04,
+                            height: size.width * 0.03,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            _userCoins,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: size.width * 0.037,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: _isGuest
             ? _buildHome()
-
-            /// Build home with User
             : BlocConsumer<UserDetailsCubit, UserDetailsState>(
                 bloc: context.read<UserDetailsCubit>(),
                 listener: (context, state) {
@@ -1787,6 +2359,36 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   return _buildHome();
                 },
               ),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        // currentIndex: _selectedIndex,
+        // onTap: _onItemTapped,
+        selectedItemColor: Theme.of(context).primaryColor,
+        unselectedItemColor: Colors.grey,
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: 'Learn',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.workspace_premium),
+            label: 'Certificates',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.card_giftcard),
+            label: 'Rewards',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
+          ),
+        ],
       ),
     );
   }

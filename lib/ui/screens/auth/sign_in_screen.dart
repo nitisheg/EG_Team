@@ -108,21 +108,73 @@ class _SignInScreenState extends State<SignInScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SizedBox(height: size.height * .09),
-              const AppLogo(),
-              SizedBox(height: size.height * .08),
+
+              // App Logo aligned to start (left)
+              const Align(
+                // alignment: Alignment.centerLeft,
+                child: AppLogo(),
+              ),
+
+              SizedBox(height: size.height * .050),
+
+              // Title: "Sign in to your Account"
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text.rich(
+                  TextSpan(
+                    style: GoogleFonts.nunito(
+                      fontSize: 29,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    children: [
+                      const TextSpan(
+                        text: 'Sign ',
+                        style: TextStyle(color: Color(0xFF1A1C1E)),
+                      ),
+                      TextSpan(
+                        text: 'in',
+                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      ),
+                      const TextSpan(
+                        text: ' to your\nAccount',
+                        style: TextStyle(color: Color(0xFF1A1C1E)),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: size.height * .01),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  context.tr('Enter your email and password to log in') ??
+                      'Enter your email and password to log in',
+                  style: GoogleFonts.nunito(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onTertiary
+                        .withOpacity(0.7),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: size.height * .05),
+
+              // Check login method configs
               if (c.areAllLoginMethodsDisabled)
                 ..._buildNoLoginMethods()
               else ...[
                 if (c.isEmailLoginMethodEnabled) ...[
                   ..._buildEmailLoginMethod(context, size.height),
                 ],
-
-                ///
                 if (c.isPhoneLoginMethodEnabled ||
                     c.isAppleLoginMethodEnabled ||
                     c.isGmailLoginMethodEnabled)
                   ..._buildSocialMediaLoginMethods(context, size.height),
               ],
+
               SizedBox(height: size.height * 0.05),
               const TermsAndCondition(),
             ],
@@ -152,8 +204,8 @@ class _SignInScreenState extends State<SignInScreen> {
       ],
       if (c.isEmailLoginMethodEnabled) ...[
         orLabel(),
-        SizedBox(height: height * 0.03),
-        loginWith(),
+        SizedBox(height: height * 0.00),
+        // loginWith(),
         showSocialMedia(context),
       ] else ...[
         BlocBuilder<SignInCubit, SignInState>(
@@ -266,7 +318,7 @@ class _SignInScreenState extends State<SignInScreen> {
       SizedBox(height: height * 0.02),
       showSignIn(context),
       SizedBox(height: height * 0.02),
-      showGoSignup(),
+      // showGoSignup(),
     ];
   }
 
@@ -362,13 +414,10 @@ class _SignInScreenState extends State<SignInScreen> {
           child: Text(
             context.tr('forgotPwdLbl')!,
             style: TextStyle(
-              fontWeight: FontWeights.regular,
+              fontWeight: FontWeights.bold,
               fontSize: 14,
               height: 1.21,
-              color: Theme.of(context)
-                  .colorScheme
-                  .onTertiary
-                  .withValues(alpha: 0.4),
+              color: Theme.of(context).primaryColor,
             ),
           ),
           onTap: () async {
@@ -469,16 +518,38 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   Widget orLabel() {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Text(
-        context.tr('orLbl')!,
-        style: TextStyle(
-          fontWeight: FontWeights.regular,
-          color:
-              Theme.of(context).colorScheme.onTertiary.withValues(alpha: 0.4),
-          fontSize: 14,
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      child: Row(
+        children: [
+          // Left line
+          const Expanded(
+            child: Divider(
+              thickness: 1,
+              color: Color(0XFFEDF1F3),
+              endIndent: 10, // spacing between line and "or"
+            ),
+          ),
+
+          // "or" text
+          Text(
+            context.tr('orLbl') ?? 'or',
+            style: TextStyle(
+              fontWeight: FontWeights.regular,
+              color: Theme.of(context).colorScheme.onTertiary.withOpacity(0.4),
+              fontSize: 14,
+            ),
+          ),
+
+          // Right line
+          const Expanded(
+            child: Divider(
+              thickness: 1,
+              color: Color(0XFFEDF1F3),
+              indent: 10, // spacing between "or" and line
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -528,7 +599,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       if (c.isAppleLoginMethodEnabled ||
                           c.isGmailLoginMethodEnabled)
                         const SizedBox(width: 25),
-                      _buildPhoneLoginIconButton(context),
+                      // _buildPhoneLoginIconButton(context),
                     ],
                   ],
           ),
@@ -560,20 +631,33 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Widget _buildGmailLoginIconButton(BuildContext context) {
     return InkWell(
-      child: Container(
-        height: 50,
-        width: 50,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-        ),
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(12),
-        child: SvgPicture.asset(
-          Assets.googleIcon,
-          height: 38,
-          width: 38,
-        ),
+      child: Row(
+        children: [
+          Container(
+            height: 50,
+            width: 50,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+            ),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(12),
+            child: SvgPicture.asset(
+              Assets.googleIcon,
+              height: 38,
+              width: 38,
+            ),
+          ),
+          Text(
+            context.tr('Continue with Google')!,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontWeight: FontWeights.regular,
+              color: Theme.of(context).colorScheme.onTertiary,
+              fontSize: 14,
+            ),
+          ),
+        ],
       ),
       onTap: () => context.read<SignInCubit>().signInUser(AuthProviders.gmail),
     );

@@ -15,6 +15,7 @@ abstract class Assets {
   static const badgesMenuIcon = '$_image/badges_icon.svg';
   static const bookmarkMenuIcon = '$_image/bookmark.svg';
   static const coin = '$_image/coin.svg';
+  static const coins = '$_image/coins.svg';
   static const coinHistoryMenuIcon = '$_image/coin_history_icon.svg';
   static const coinMenuIcon = '$_image/coin_icon.svg';
   static const contactUsIcon = '$_image/contactus_icon.svg';
@@ -29,6 +30,7 @@ abstract class Assets {
   static const mapFinded = '$_image/map_finded.png';
   static const mapFinding = '$_image/map_finding.png';
   static const notificationMenuIcon = '$_image/notification_icon.svg';
+  static const notificationAlarmIcon = '$_image/notification_alarm_icon.svg';
   static const privacyPolicyIcon = '$_image/privacypolicy_icon.svg';
   static const rewardMenuIcon = '$_image/reword_icon.svg';
   static const scratchCardCover = '$_image/scratchCardCover.png';
@@ -86,6 +88,10 @@ abstract class Assets {
   static const onboardingA = '$_image/onboarding_a.svg';
   static const onboardingB = '$_image/onboarding_b.svg';
   static const onboardingC = '$_image/onboarding_c.svg';
+  static const playIcon = '$_image/play_icon.svg';
+  static const penLineIcon = '$_image/pen_line_icon.svg';
+  static const trophyIcon = '$_image/trophy_icon.svg';
+  static const dailyQuizBanner = '$_image/daily_quiz_banner.png';
 
   static String emoji(String name) => '$kEmojisPath/$name';
 

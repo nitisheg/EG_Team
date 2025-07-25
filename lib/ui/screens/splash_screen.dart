@@ -216,15 +216,15 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
 
                 /// Organization Logo
-                if (showCompanyLogo) ...[
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 22),
-                      child: QImage(imageUrl: _orgLogoPath),
-                    ),
-                  ),
-                ],
+                // if (showCompanyLogo) ...[
+                //   Align(
+                //     alignment: Alignment.bottomCenter,
+                //     child: Padding(
+                //       padding: const EdgeInsets.only(bottom: 22),
+                //       child: QImage(imageUrl: _orgLogoPath),
+                //     ),
+                //   ),
+                // ],
               ],
             ),
           ),

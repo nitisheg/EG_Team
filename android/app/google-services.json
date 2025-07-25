@@ -15,11 +15,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "5926029573-ot15f202p95vtt7no4ugjd1q8vm0vkut.apps.googleusercontent.com",
+          "client_id": "5926029573-fe0h61as98ijlbejs6u69vvlml9kvgaq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.eglogics.quiz",
-            "certificate_hash": "bf605887e32a846bef574d4974e591f9bea26e2e"
+            "certificate_hash": "5bd24588aaf1cd91ae6cf62a5e6bcc3a045d8ecf"
           }
         },
         {
