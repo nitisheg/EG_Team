@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -32,6 +33,7 @@ import 'package:flutterquiz/features/system_config/cubits/system_config_cubit.da
 import 'package:flutterquiz/ui/screens/battle/create_or_join_screen.dart';
 import 'package:flutterquiz/ui/screens/home/widgets/activity_card.dart';
 import 'package:flutterquiz/ui/screens/home/widgets/all.dart';
+import 'package:flutterquiz/ui/screens/home/widgets/daily_quote.dart';
 import 'package:flutterquiz/ui/screens/home/widgets/learn_and_explore.dart';
 import 'package:flutterquiz/ui/screens/profile/create_or_edit_profile_screen.dart';
 import 'package:flutterquiz/ui/widgets/all.dart';
@@ -510,6 +512,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   void _onTapLeaderboard() => Navigator.of(context).pushNamed(
         _isGuest ? Routes.login : Routes.leaderBoard,
       );
+  void _onTapDailyTask() => Navigator.of(context).pushNamed(
+        _isGuest ? Routes.login : Routes.trueFalse,
+      );
 
   void _onPressedZone(String index) {
     if (_isGuest) {
@@ -719,28 +724,50 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   //                 const Spacer(),
   //
   //                 /// LeaderBoard
-  //                 // Container(
-  //                 //   width: size.width * 0.11,
-  //                 //   height: size.width * 0.11,
-  //                 //   decoration: BoxDecoration(
-  //                 //     color: Theme.of(context).primaryColor,
-  //                 //     borderRadius: BorderRadius.circular(10),
-  //                 //   ),
-  //                 //   child: IconButton(
-  //                 //     onPressed: _onTapLeaderboard,
-  //                 //     icon: _isGuest
-  //                 //         ? const Icon(
-  //                 //             Icons.login_rounded,
-  //                 //             color: Colors.white,
-  //                 //           )
-  //                 //         : QImage(
-  //                 //             imageUrl: Assets.leaderboardIcon,
-  //                 //             color: Colors.white,
-  //                 //             width: size.width * 0.08,
-  //                 //             height: size.width * 0.08,
-  //                 //           ),
-  //                 //   ),
-  //                 // ),
+  // Container(
+  //   width: size.width * 0.11,
+  //   height: size.width * 0.11,
+  //   decoration: BoxDecoration(
+  //     color: Theme.of(context).primaryColor,
+  //     borderRadius: BorderRadius.circular(10),
+  //   ),
+  //   child: IconButton(
+  //     onPressed: _onTapLeaderboard,
+  //     icon: _isGuest
+  //         ? const Icon(
+  //             Icons.login_rounded,
+  //             color: Colors.white,
+  //           )
+  //         : QImage(
+  //             imageUrl: Assets.leaderboardIcon,
+  //             color: Colors.white,
+  //             width: size.width * 0.08,
+  //             height: size.width * 0.08,
+  //           ),
+  //   ),
+  // ),
+  // Container(
+  //   width: size.width * 0.11,
+  //   height: size.width * 0.11,
+  //   decoration: BoxDecoration(
+  //     color: Theme.of(context).primaryColor,
+  //     borderRadius: BorderRadius.circular(10),
+  //   ),
+  //   child: IconButton(
+  //     onPressed: _onTapLeaderboard,
+  //     icon: _isGuest
+  //         ? const Icon(
+  //             Icons.login_rounded,
+  //             color: Colors.white,
+  //           )
+  //         : QImage(
+  //             imageUrl: Assets.leaderboardIcon,
+  //             color: Colors.white,
+  //             width: size.width * 0.08,
+  //             height: size.width * 0.08,
+  //           ),
+  //   ),
+  // ),
   //
   //                 ///notification
   //
@@ -821,264 +848,268 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   //   );
   // }
 
-  Widget _buildCategory() {
+  Widget buildDailyQuotes() {
+    return const DailyQuoteScreen();
+  }
+
+  Widget _buildZones() {
     return Column(
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: hzMargin),
-          // child: Row(
-          //   children: [
-          //     Text(
-          //       context.tr('quizZone')!,
-          //       style: _boldTextStyle,
-          //     ),
-          //     const Spacer(),
-          //     GestureDetector(
-          //       onTap: () {
-          //         _isGuest
-          //             ? _showLoginDialog()
-          //             : Navigator.of(context).pushNamed(
-          //                 Routes.category,
-          //                 arguments: {'quizType': QuizTypes.quizZone},
-          //               );
-          //       },
-          //       child: Text(
-          //         context.tr(viewAllKey) ?? viewAllKey,
-          //         style: TextStyle(
-          //           fontSize: 14,
-          //           fontWeight: FontWeight.w600,
-          //           color: Theme.of(context)
-          //               .colorScheme
-          //               .onTertiary
-          //               .withValues(alpha: .6),
-          //         ),
-          //       ),
-          //     ),
-          //   ],
-          // ),
-        ),
-        Wrap(
-          children: [
-            Stack(
-              clipBehavior: Clip.none,
-              children: [
-                Positioned(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      vertical: 36,
-                      horizontal: 13,
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.black12,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(9),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.red.withOpacity(0.015),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Image.asset(
-                          'assets/images/daily_quiz_banner.png',
-                          width: 148,
-                          height: 85,
-                        ), // Replace with real image
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Row(
-                                children: [
-                                  Text(
-                                    'Daily Task',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  Spacer(),
-                                  QImage(
-                                    imageUrl: Assets.playIcon,
-                                    width: 09,
-                                    height: 09,
-                                  ),
-                                ],
-                              ),
-                              const Text(
-                                '14 Questions',
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              const SizedBox(height: 4),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(22),
-                                child: LinearProgressIndicator(
-                                  value: 9 / 14,
-                                  backgroundColor: Colors.grey[300],
-                                  color: Colors.red,
-                                  minHeight: 6,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              const Row(
-                                children: [
-                                  Text(
-                                    'Progress',
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                  Spacer(),
-                                  Text('9/14', style: TextStyle(fontSize: 12)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  // child: Container(
-                  //   decoration: BoxDecoration(
-                  //     borderRadius: BorderRadius.circular(10),
-                  //     color: Theme.of(context).colorScheme.surface,
-                  //   ),
-                  //   margin: EdgeInsets.only(
-                  //     left: hzMargin,
-                  //     right: hzMargin,
-                  //     top: 10,
-                  //     bottom: 26,
-                  //   ),
-                  //   width: context.width,
-                  //   child: quizZoneCategories(),
-                  // ),
-                ),
-
-                /// Expand Arrow
-                if (canExpandCategoryList) ...[
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    // Position the center bottom arrow, from here
-                    bottom: -9,
-                    child: Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.transparent),
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).scaffoldBackgroundColor,
-                      ),
-                      child: GestureDetector(
-                        onTap: () => setState(() {
-                          isCateListExpanded = !isCateListExpanded;
-                        }),
-                        child: Container(
-                          width: 30,
-                          height: 30,
-                          margin: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            !isCateListExpanded
-                                ? Icons.keyboard_arrow_down_rounded
-                                : Icons.keyboard_arrow_up_rounded,
-                            color: Theme.of(context).primaryColor,
-                            size: 32,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ],
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            // crossAxisAlignment: CrossAxisAlignment.center,
+          child: Wrap(
             children: [
-              const Text(
-                '“Success is not final, failure is not fatal, it is the courage to continue that counts.”',
-                style: TextStyle(
-                  fontStyle: FontStyle.italic,
-                  color: Colors.black,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              const Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: 'Yesterday | Submitted by ',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.grey,
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Positioned(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(
+                        vertical: 36,
+                        horizontal: 13,
                       ),
-                    ),
-                    TextSpan(
-                      text: 'Aarav',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                height: 36,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                  ),
-                  onPressed: () {
-                    // TODO: Add submit logic here
-                  },
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        'Submit Quote',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.black12,
+                          width: 1.5,
                         ),
+                        borderRadius: BorderRadius.circular(9),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.red.withOpacity(0.015),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 8),
-                      QImage(
-                        imageUrl: Assets.penLineIcon,
-                        width: 17,
-                        height: 17,
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            'assets/images/daily_quiz_banner.png',
+                            width: 148,
+                            height: 85,
+                          ), // Replace with real image
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    const Text(
+                                      'Daily Task',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const Spacer(),
+                                    IconButton(
+                                      onPressed: () {
+                                        if (_isGuest) {
+                                          // Navigate to login or show a message
+                                          Navigator.pushNamed(
+                                            context,
+                                            Routes.login,
+                                          );
+                                        } else {
+                                          // Navigate to True/False screen
+                                          Navigator.of(context).pushNamed(
+                                            Routes.quiz,
+                                            arguments: {
+                                              'quizType':
+                                                  QuizTypes.trueAndFalse,
+                                              'numberOfPlayer': 1,
+                                            },
+                                          );
+                                        }
+                                      },
+                                      icon: _isGuest
+                                          ? const QImage(
+                                              imageUrl: Assets.playIcon,
+                                              width: 9,
+                                              height: 9,
+                                            )
+                                          : const QImage(
+                                              imageUrl: Assets.playIcon,
+                                              width: 9,
+                                              height: 9,
+                                            ),
+                                    ),
+                                  ],
+                                ),
+                                const Text(
+                                  '14 Questions',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                const SizedBox(height: 4),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(22),
+                                  child: LinearProgressIndicator(
+                                    value: 9 / 14,
+                                    backgroundColor: Colors.grey[300],
+                                    color: Colors.red,
+                                    minHeight: 6,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                const Row(
+                                  children: [
+                                    Text(
+                                      'Progress',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    Spacer(),
+                                    Text(
+                                      '9/14',
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
+
+                    // child: Container(
+                    //   decoration: BoxDecoration(
+                    //     borderRadius: BorderRadius.circular(10),
+                    //     color: Theme.of(context).colorScheme.surface,
+                    //   ),
+                    //   margin: EdgeInsets.only(
+                    //     left: hzMargin,
+                    //     right: hzMargin,
+                    //     top: 10,
+                    //     bottom: 26,
+                    //   ),
+                    //   width: context.width,
+                    //   child: quizZoneCategories(),
+                    // ),
                   ),
-                ),
+
+                  /// Expand Arrow
+                  // if (canExpandCategoryList) ...[
+                  //   Positioned(
+                  //     left: 0,
+                  //     right: 0,
+                  //     // Position the center bottom arrow, from here
+                  //     bottom: -9,
+                  //     child: Container(
+                  //       width: 50,
+                  //       height: 50,
+                  //       decoration: BoxDecoration(
+                  //         border: Border.all(color: Colors.transparent),
+                  //         shape: BoxShape.circle,
+                  //         color: Theme.of(context).scaffoldBackgroundColor,
+                  //       ),
+                  //       child: GestureDetector(
+                  //         onTap: () => setState(() {
+                  //           isCateListExpanded = !isCateListExpanded;
+                  //         }),
+                  //         child: Container(
+                  //           width: 30,
+                  //           height: 30,
+                  //           margin: const EdgeInsets.all(4),
+                  //           decoration: BoxDecoration(
+                  //             color: Theme.of(context).colorScheme.surface,
+                  //             shape: BoxShape.circle,
+                  //           ),
+                  //           child: Icon(
+                  //             !isCateListExpanded
+                  //                 ? Icons.keyboard_arrow_down_rounded
+                  //                 : Icons.keyboard_arrow_up_rounded,
+                  //             color: Theme.of(context).primaryColor,
+                  //             size: 32,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ],
+                ],
               ),
             ],
           ),
         ),
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        //   child: Column(
+        //     // crossAxisAlignment: CrossAxisAlignment.center,
+        //     children: [
+        //       const Text(
+        //         '“Success is not final, failure is not fatal, it is the courage to continue that counts.”',
+        //         style: TextStyle(
+        //           fontStyle: FontStyle.italic,
+        //           color: Colors.black,
+        //           fontSize: 14,
+        //           fontWeight: FontWeight.bold,
+        //         ),
+        //         textAlign: TextAlign.center,
+        //       ),
+        //       const SizedBox(height: 12),
+        //       const Text.rich(
+        //         TextSpan(
+        //           children: [
+        //             TextSpan(
+        //               text: 'Yesterday | Submitted by ',
+        //               style: TextStyle(
+        //                 fontSize: 12,
+        //                 fontWeight: FontWeight.w400,
+        //                 color: Colors.grey,
+        //               ),
+        //             ),
+        //             TextSpan(
+        //               text: 'Aarav',
+        //               style: TextStyle(
+        //                 fontSize: 12,
+        //                 fontWeight: FontWeight.bold,
+        //                 color: Colors.grey,
+        //               ),
+        //             ),
+        //           ],
+        //         ),
+        //         textAlign: TextAlign.center,
+        //       ),
+        //       const SizedBox(height: 12),
+        //       SizedBox(
+        //         height: 36,
+        //         child: ElevatedButton(
+        //           style: ElevatedButton.styleFrom(
+        //             backgroundColor: Theme.of(context).primaryColor,
+        //             shape: RoundedRectangleBorder(
+        //               borderRadius: BorderRadius.circular(8),
+        //             ),
+        //             padding: const EdgeInsets.symmetric(horizontal: 12),
+        //           ),
+        //           onPressed: () {
+        //             // TODO: Add submit logic here
+        //           },
+        //           child: const Row(
+        //             mainAxisSize: MainAxisSize.min,
+        //             children: [
+        //               Text(
+        //                 'Submit Quote',
+        //                 style: TextStyle(
+        //                   fontSize: 14,
+        //                   fontWeight: FontWeight.bold,
+        //                   color: Colors.white,
+        //                 ),
+        //               ),
+        //               SizedBox(width: 8),
+        //               QImage(
+        //                 imageUrl: Assets.penLineIcon,
+        //                 width: 17,
+        //                 height: 17,
+        //               ),
+        //             ],
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
       ],
     );
   }
@@ -2130,7 +2161,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       }
 
                       if (_sysConfigCubit.isQuizZoneEnabled) {
-                        return _buildCategory();
+                        // return _buildCategory();
                       }
 
                       return const SizedBox.shrink();
@@ -2144,10 +2175,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   if (_sysConfigCubit.isContestEnabled && !_isGuest) ...[
                     // _buildLiveContestSection(),
                   ],
+                  _buildZones(),
+                  buildDailyQuotes(),
                   _buildExamSelf(),
                   _buildLearnAndExplore(),
                   _buildBattle(),
-                  // _buildZones(),
                 ],
               ),
             ),
@@ -2228,7 +2260,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         SizedBox(
                           width: constraint.maxWidth * 0.5,
                           child: Text(
-                            '${context.tr(helloKey)!} ${_isGuest ? context.tr('guest')! : _userName}',
+                            '${context.tr(hiKey)!} ${_isGuest ? context.tr('guest')! : _userName}',
                             maxLines: 1,
                             style: _boldTextStyle,
                             overflow: TextOverflow.ellipsis,
@@ -2236,7 +2268,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         ),
                       ],
                     ),
-                    const Spacer(),
 
                     /// Notification Button
                     SizedBox(
