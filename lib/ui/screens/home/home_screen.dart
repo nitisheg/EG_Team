@@ -104,7 +104,11 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   ];
 
   final todayActivityZones = <ZoneType>[
-    (title: 'Quiz of the day', img: Assets.examQuizIcon, desc: '15 Question'),
+    (
+      title: 'Quiz of the day',
+      img: Assets.examQuizIcon,
+      desc: '15 Question',
+    ),
     (
       title: 'Featured Quiz',
       img: Assets.selfChallengeIcon,
@@ -286,6 +290,15 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
       if (!_sysConfigCubit.isMultiMatchQuizEnabled) {
         playDifferentZones.removeWhere((e) => e.title == 'multiMatch');
       }
+      // if (!_sysConfigCubit.isFunNLearnEnabled) {
+      //   playDifferentZones.removeWhere((e) => e.title == 'Quiz of the day');
+      // }
+      // if (!_sysConfigCubit.isFunNLearnEnabled) {
+      //   playDifferentZones.removeWhere((e) => e.title == 'Featured Quiz');
+      // }
+      // if (!_sysConfigCubit.isFunNLearnEnabled) {
+      //   playDifferentZones.removeWhere((e) => e.title == 'Fun Friday');
+      // }
       setState(() {});
     });
   }
@@ -583,21 +596,90 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     }
   }
 
-  void _onPressedSelfExam(String index) {
+  void onPressedTodayActivity(String title) {
     if (_isGuest) {
       _showLoginDialog();
       return;
     }
 
-    if (index == 'exam') {
-      context.read<ExamCubit>().updateState(ExamInitial());
-      Navigator.of(context).pushNamed(Routes.exams);
-    } else if (index == 'selfChallenge') {
-      context.read<QuizCategoryCubit>().updateState(QuizCategoryInitial());
-      context.read<SubCategoryCubit>().updateState(SubCategoryInitial());
-      Navigator.of(context).pushNamed(Routes.selfChallenge);
+    switch (title) {
+      case 'Quiz of the day':
+        Navigator.pushNamed(
+          context,
+          Routes.category,
+          arguments: {
+            'quizType': QuizTypes.mathMania,
+            'numberOfPlayer': 1,
+          },
+        );
+        return;
+
+      case 'Featured Quiz':
+        Navigator.pushNamed(
+          context,
+          Routes.category,
+          arguments: {
+            'quizType': QuizTypes.guessTheWord,
+            'numberOfPlayer': 1,
+          },
+        );
+        return;
+
+      case 'Fun Friday':
+        Navigator.pushNamed(
+          context,
+          Routes.category,
+          arguments: {
+            'quizType': QuizTypes.funAndLearn,
+            'numberOfPlayer': 1,
+          },
+        );
+        return;
+
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unknown quiz type')),
+        );
+        return;
     }
   }
+
+  // void _onPressedSelfExam(String index) {
+  //   if (_isGuest) {
+  //     _showLoginDialog();
+  //     return;
+  //   }
+  //
+  //   if (index == 'Quiz of the day') {
+  //     context.read<ExamCubit>().updateState(ExamInitial());
+  //     Navigator.of(context).pushNamed(Routes.funAndLearn);
+  //   } else if (index == 'Featured Quiz') {
+  //     context.read<QuizCategoryCubit>().updateState(QuizCategoryInitial());
+  //     context.read<SubCategoryCubit>().updateState(SubCategoryInitial());
+  //     Navigator.of(context).pushNamed(Routes.funAndLearn);
+  //   }
+  //   else if (index == 'Fun Friday') {
+  //     context.read<QuizCategoryCubit>().updateState(QuizCategoryInitial());
+  //     context.read<SubCategoryCubit>().updateState(SubCategoryInitial());
+  //     Navigator.of(context).pushNamed(Routes.funAndLearn);
+  //   }
+  //
+  // }
+  // void _onPressedSelfExam(String index) {
+  //   if (_isGuest) {
+  //     _showLoginDialog();
+  //     return;
+  //   }
+  //
+  //   if (index == 'exam') {
+  //     context.read<ExamCubit>().updateState(ExamInitial());
+  //     Navigator.of(context).pushNamed(Routes.exams);
+  //   } else if (index == 'selfChallenge') {
+  //     context.read<QuizCategoryCubit>().updateState(QuizCategoryInitial());
+  //     context.read<SubCategoryCubit>().updateState(SubCategoryInitial());
+  //     Navigator.of(context).pushNamed(Routes.selfChallenge);
+  //   }
+  // }
 
   void _onPressedBattle(String index) {
     if (_isGuest) {
@@ -901,7 +983,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     const Text(
                                       'Daily Task',
                                       style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                     const Spacer(),
                                     IconButton(
@@ -915,10 +998,10 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                         } else {
                                           // Navigate to True/False screen
                                           Navigator.of(context).pushNamed(
-                                            Routes.quiz,
+                                            Routes.category,
                                             arguments: {
                                               'quizType':
-                                                  QuizTypes.trueAndFalse,
+                                                  QuizTypes.guessTheWord,
                                               'numberOfPlayer': 1,
                                             },
                                           );
@@ -1115,7 +1198,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildExamSelf() {
-    return examZones.isNotEmpty
+    return todayActivityZones.isNotEmpty
         ? Padding(
             padding: EdgeInsets.only(
               left: hzMargin,
@@ -1128,8 +1211,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 Row(
                   children: [
                     Text(
-                      context.tr(todayActivity) ?? selfExamZoneKey,
-                      style: _boldTextStyle,
+                      context.tr(todayActivity) ?? todayActivity,
+                      style: _boldTextStyle.copyWith(color: Colors.black),
                     ),
                     const Spacer(),
                     GestureDetector(
@@ -1158,18 +1241,19 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   crossAxisCount: 3,
                   shrinkWrap: true,
                   mainAxisSpacing: 20,
-                  padding: EdgeInsets.only(top: _statusBarPadding * 0.2),
+                  padding: EdgeInsets.only(top: _statusBarPadding * 0.4),
                   crossAxisSpacing: 20,
                   physics: const NeverScrollableScrollPhysics(),
                   // Generate 100 widgets that display their index in the List.
                   children: List.generate(
                     todayActivityZones.length,
                     (i) => ActivityCard(
-                      onTap: () => _onPressedSelfExam(examZones[i].title),
+                      onTap: () =>
+                          onPressedTodayActivity(todayActivityZones[i].title),
                       title: context.tr(todayActivityZones[i].title)!,
                       desc: context.tr(todayActivityZones[i].desc)!,
-                      backgroundColor: Colors.white,
-                      borderColor: Colors.transparent,
+                      // strokeColor: todayActivityZones[i].strokeColor,
+                      // titleColor: todayActivityZones[i].titleColor,
                       // img: examZones[i].img,
                     ),
                     // (i) => QuizGridCard(
@@ -1201,7 +1285,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   children: [
                     Text(
                       context.tr('Learn & Explore') ?? 'Learn & Explore',
-                      style: _boldTextStyle,
+                      style: _boldTextStyle.copyWith(color: Colors.black),
                     ),
                     const Spacer(),
                     GestureDetector(
@@ -1277,57 +1361,173 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                       vertical: 36,
                       horizontal: 13,
                     ),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black12,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(11),
-                      color: Colors.transparent,
-                    ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Row(
-                          children: [
-                            Text(
-                              'Battle’s Of The Day\n1-on-1 Battle Mode',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
+                        /// 1-on-1 Battle Card
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          margin: const EdgeInsets.only(bottom: 20),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
                               ),
-                            ),
-                            SizedBox(height: 4),
-                            Spacer(),
-                            QImage(
-                              imageUrl: Assets.trophyIcon,
-                              width: 40,
-                              height: 40,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        const Text('Challenge your peers & win extra coins!'),
-                        const SizedBox(height: 12),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
+                            ],
                           ),
-                          onPressed: () {
-                            // TODO: Start challenge logic
-                          },
-                          child: const Text(
-                            'Start a Challenge',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Row(
+                                children: [
+                                  Text(
+                                    'Battle’s Of The Day\n1-on-1 Battle Mode',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Spacer(),
+                                  QImage(
+                                    imageUrl: Assets.trophyIcon,
+                                    width: 40,
+                                    height: 40,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              const Text(
+                                'Challenge your peers & win extra coins!',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute<CreateOrJoinRoomScreen>(
+                                      builder: (_) => BlocProvider<
+                                          UpdateScoreAndCoinsCubit>(
+                                        create: (_) => UpdateScoreAndCoinsCubit(
+                                          ProfileManagementRepository(),
+                                        ),
+                                        child: CreateOrJoinRoomScreen(
+                                          quizType: QuizTypes.oneVsOneBattle,
+                                          title: context.tr('playWithFrdLbl')!,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  'Start a Challenge',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        /// Group Battle Card
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Row(
+                                children: [
+                                  Text(
+                                    'Battle’s Of The Day\nGroup Battle Mode',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Spacer(),
+                                  QImage(
+                                    imageUrl: Assets.groupBattleIcon,
+                                    color: Color(0xFFCD2222),
+                                    width: 40,
+                                    height: 40,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              const Text(
+                                'Join a group and battle together for big rewards!',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10)),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute<void>(
+                                      builder: (_) => BlocProvider<
+                                          UpdateScoreAndCoinsCubit>(
+                                        create: (context) =>
+                                            UpdateScoreAndCoinsCubit(
+                                          ProfileManagementRepository(),
+                                        ),
+                                        child: CreateOrJoinRoomScreen(
+                                          quizType: QuizTypes.groupPlay,
+                                          title: context.tr('groupPlay')!,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text(
+                                  'Join Group Battle',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -2221,7 +2421,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             child: LayoutBuilder(
               builder: (context, constraint) {
                 final size = MediaQuery.of(context).size;
-
                 return Row(
                   children: [
                     GestureDetector(

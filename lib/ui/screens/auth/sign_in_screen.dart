@@ -69,7 +69,7 @@ class _SignInScreenState extends State<SignInScreen> {
             state.authProvider != AuthProviders.email) {
           context.read<AuthCubit>().updateAuthDetails(
                 authProvider: state.authProvider,
-                firebaseId: state.user.uid,
+            firebaseId: state.user.uid,
                 authStatus: true,
                 isNewUser: state.isNewUser,
               );

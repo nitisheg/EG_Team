@@ -439,3 +439,7 @@ const wonMultiMatchKey = 'wonMultiMatch';
 const egLogics = 'EG{LOGICS}';
 const todayActivity = 'Today’s Activity';
 const learnAndExplore = 'Learn & Explore';
+const quizOfTheDay = 'Quiz of the day';
+const featuredQuiz = 'Featured Quiz';
+const funFriday = 'Fun Friday';
+

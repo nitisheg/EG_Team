@@ -68,24 +68,68 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Submit Today's Quote"),
-        content: TextField(
-          controller: _quoteController,
-          maxLines: 3,
-          decoration: const InputDecoration(hintText: 'Enter your quote...'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
         ),
+        title: const Text(
+          "Submit Today's Quote",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        content: SizedBox(
+          height: 100,
+          child: TextField(
+            controller: _quoteController,
+            maxLines: 3,
+            decoration: InputDecoration(
+              hintText: 'Enter your quote...',
+              hintStyle: const TextStyle(color: Colors.grey),
+              filled: true,
+              fillColor: Colors.grey.shade100,
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey.shade300),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.grey.shade300),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Theme.of(context).primaryColor),
+              ),
+            ),
+          ),
+        ),
+        actionsPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.grey.shade700,
+            ),
             child: const Text('Cancel'),
           ),
           ElevatedButton(
             onPressed: () {
-              if (_quoteController.text.trim().isNotEmpty) {
+              final text = _quoteController.text.trim();
+              if (text.isNotEmpty) {
                 Navigator.pop(context);
-                _submitQuote(_quoteController.text.trim());
+                _submitQuote(text);
               }
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFCD2222),
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
             child: const Text('Submit'),
           ),
         ],
@@ -186,7 +230,7 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
             return Column(
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.20,
+                  height: MediaQuery.of(context).size.height * 0.25,
                   child: PageView.builder(
                     controller: _pageController,
                     itemCount: quotes.length,
