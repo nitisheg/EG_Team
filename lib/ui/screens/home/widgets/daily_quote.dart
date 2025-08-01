@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterquiz/commons/widgets/custom_image.dart';
 import 'package:flutterquiz/core/constants/assets_constants.dart';
+import 'package:flutterquiz/features/auth/auth_local_data_source.dart';
 import 'package:intl/intl.dart';
 
 class DailyQuoteScreen extends StatefulWidget {
@@ -43,25 +44,59 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
 
   Future<void> _submitQuote(String quoteText) async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user == null) return;
+    if (user == null) {
+      return;
+    }
 
-    final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    final docId = '${user.uid}_$today';
+    var userName = 'Anonymous';
 
-    await FirebaseFirestore.instance.collection('daily_quotes').doc(docId).set({
-      'userId': user.uid,
-      'quote': quoteText,
-      'submittedAt': FieldValue.serverTimestamp(),
-    });
+    try {
+      // TEMP: use custom user ID (e.g., "3") instead of Firebase UID
+      // const customUserId = 'user1'; // ✅ replace this with actual logic if needed
+      // final customUserId = await AuthLocalDataSource.getUserFirebaseId();
 
-    setState(() {
-      _hasSubmitted = true;
-      _quoteController.clear();
-    });
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('multiUserBattleRoom')
+          .where('user1.uid')
+          .limit(1)
+          .get();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Quote submitted successfully!')),
-    );
+      if (querySnapshot.docs.isNotEmpty) {
+        final data = querySnapshot.docs.first.data();
+        final user1 = data['user1'] as Map<String, dynamic>?;
+
+        if (user1 != null) {
+          userName = user1['name']?.toString() ?? 'Anonymous';
+        } else {}
+      } else {}
+
+      final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      final docId = '${user.uid}_$today';
+
+      await FirebaseFirestore.instance
+          .collection('daily_quotes')
+          .doc(docId)
+          .set({
+        'userName': user.displayName,
+        'quote': quoteText,
+        'submittedAt': FieldValue.serverTimestamp(),
+      });
+
+      setState(() {
+        _hasSubmitted = true;
+        _quoteController.clear();
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Quote submitted successfully!')),
+      );
+    } catch (e, stackTrace) {
+      debugPrint('StackTrace: $stackTrace');
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to submit quote.')),
+      );
+    }
   }
 
   void _showSubmitDialog() {
@@ -137,7 +172,7 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
     );
   }
 
-  Widget _buildQuoteCard(String quote, String userId, Timestamp submittedAt) {
+  Widget _buildQuoteCard(String quote, String userName, Timestamp submittedAt) {
     final date = submittedAt.toDate();
     final now = DateTime.now();
 
@@ -158,7 +193,6 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
       //   border: Border.all(color: Colors.grey.shade300),
       // ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
             '"$quote"',
@@ -171,7 +205,7 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
           ),
           const SizedBox(height: 12),
           Text(
-            '$dateText | Submitted by $userId',
+            '$dateText | Submitted by $userName',
             style: const TextStyle(fontSize: 12, color: Colors.grey),
             textAlign: TextAlign.center,
           ),
@@ -244,12 +278,12 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
                           final quoteData =
                               quotes[index].data()! as Map<String, dynamic>;
                           final quote = (quoteData['quote'] ?? '') as String;
-                          final userId =
-                              (quoteData['userId'] ?? 'User') as String;
+                          final userName =
+                              (quoteData['userName'] ?? 'Anonymous') as String;
                           final submittedAt = (quoteData['submittedAt'] ??
                               Timestamp.now()) as Timestamp;
 
-                          return _buildQuoteCard(quote, userId, submittedAt);
+                          return _buildQuoteCard(quote, userName, submittedAt);
                         },
                       );
                     },

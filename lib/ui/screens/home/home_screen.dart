@@ -2486,12 +2486,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
                     /// Coins
                     Container(
-                      width: size.width * 0.16,
-                      height: size.height * 0.04,
+                      width: size.width * 0.18,
+                      height: size.height * 0.038,
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(11),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -2501,7 +2501,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             width: size.width * 0.04,
                             height: size.width * 0.03,
                           ),
-                          const SizedBox(width: 6),
+                          const SizedBox(width: 5),
                           Text(
                             _userCoins,
                             style: TextStyle(
