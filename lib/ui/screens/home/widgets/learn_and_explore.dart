@@ -19,22 +19,28 @@ class LearnAndExploreCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Padding(
+      child: Container(
+        width: 161,
         padding: const EdgeInsets.only(top: 8, left: 1, right: 1),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: QImage(
-                imageUrl: img,
-                fit: BoxFit.contain,
-                width: 161,
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: QImage(
+                  imageUrl: img,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
             const SizedBox(height: 8),
             Text(
               title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 14,

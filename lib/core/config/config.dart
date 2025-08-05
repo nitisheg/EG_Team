@@ -24,8 +24,8 @@ const defaultThemeKey = lightThemeKey;
 const defaultCountryCodeForPhoneLogin = 'IN';
 const maxPhoneNumberLength = 16;
 
-final kFonts = GoogleFonts.nunito();
-final kTextTheme = GoogleFonts.nunitoTextTheme();
+final kFonts = GoogleFonts.poppins();
+final kTextTheme = GoogleFonts.poppinsTextTheme();
 
 // Assets, if you want to change the logo format like png, jpg, etc.
 const kAppLogo = 'assets/config/app_logo.svg';

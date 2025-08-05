@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -171,6 +173,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   late final SystemConfigCubit _sysConfigCubit;
   final _quizZoneId =
       UiUtils.getCategoryTypeNumberFromQuizType(QuizTypes.quizZone);
+
 
   @override
   void initState() {
@@ -948,9 +951,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     child: Container(
                       margin: const EdgeInsets.symmetric(
                         vertical: 36,
-                        horizontal: 13,
+                        horizontal: 10,
                       ),
-                      padding: const EdgeInsets.all(12),
+                      padding: const EdgeInsets.all(9),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         border: Border.all(
@@ -960,9 +963,9 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         borderRadius: BorderRadius.circular(9),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.red.withOpacity(0.015),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
+                            color: Colors.yellow.withOpacity(0.2),
+                            blurRadius: 16,
+                            offset: const Offset(0, 6),
                           ),
                         ],
                       ),
@@ -972,7 +975,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             'assets/images/daily_quiz_banner.png',
                             width: 148,
                             height: 85,
-                          ), // Replace with real image
+                          ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
@@ -980,50 +983,52 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                               children: [
                                 Row(
                                   children: [
-                                    const Text(
-                                      'Daily Task',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                    RichText(
+                                      text: const TextSpan(
+                                        text: 'Daily Task\n',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                          fontSize: 15,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: '14 Questions',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.normal,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     const Spacer(),
                                     IconButton(
                                       onPressed: () {
                                         if (_isGuest) {
-                                          // Navigate to login or show a message
                                           Navigator.pushNamed(
                                             context,
                                             Routes.login,
                                           );
                                         } else {
-                                          // Navigate to True/False screen
                                           Navigator.of(context).pushNamed(
                                             Routes.category,
                                             arguments: {
                                               'quizType':
-                                                  QuizTypes.guessTheWord,
+                                                  QuizTypes.trueAndFalse,
                                               'numberOfPlayer': 1,
                                             },
                                           );
                                         }
                                       },
-                                      icon: _isGuest
-                                          ? const QImage(
-                                              imageUrl: Assets.playIcon,
-                                              width: 9,
-                                              height: 9,
-                                            )
-                                          : const QImage(
-                                              imageUrl: Assets.playIcon,
-                                              width: 9,
-                                              height: 9,
-                                            ),
+                                      icon: const QImage(
+                                        imageUrl: Assets.playIcon,
+                                        width: 9,
+                                        height: 9,
+                                      ),
                                     ),
                                   ],
-                                ),
-                                const Text(
-                                  '14 Questions',
-                                  style: TextStyle(color: Colors.grey),
                                 ),
                                 const SizedBox(height: 4),
                                 ClipRRect(
@@ -1031,8 +1036,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                   child: LinearProgressIndicator(
                                     value: 9 / 14,
                                     backgroundColor: Colors.grey[300],
-                                    color: Colors.red,
-                                    minHeight: 6,
+                                    color: const Color(0xFFCD2222),
+                                    minHeight: 3,
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -1198,6 +1203,17 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   }
 
   Widget _buildExamSelf() {
+    void onTapViewAll() {
+      if (_sysConfigCubit.isContestEnabled) {
+        Navigator.of(context).pushNamed(Routes.contest);
+      } else {
+        UiUtils.showSnackBar(
+          context.tr(currentlyNotAvailableKey)!,
+          context,
+        );
+      }
+    }
+
     return todayActivityZones.isNotEmpty
         ? Padding(
             padding: EdgeInsets.only(
@@ -1216,15 +1232,21 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     ),
                     const Spacer(),
                     GestureDetector(
-                      // onTap: onTapViewAll,
+                      onTap: () {
+                        if (_isGuest) {
+                          _showLoginDialog();
+                        } else {
+                          // Navigator.of(context).pushNamed(Routes.badges);
+                        }
+                      },
                       child: Row(
                         children: [
                           Text(
-                            context.tr(viewAllKey) ?? viewAllKey,
+                            context.tr(viewMoreKey) ?? viewMoreKey,
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: Colors.blue,
+                              color: Color(0xFF5486F2),
                             ),
                           ),
                           const Icon(
@@ -1289,15 +1311,21 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                     ),
                     const Spacer(),
                     GestureDetector(
-                      // onTap: onTapViewAllLearnExplore,
+                      onTap: () {
+                        if (_isGuest) {
+                          _showLoginDialog();
+                        } else {
+                          // Navigator.of(context).pushNamed(Routes.badges);
+                        }
+                      },
                       child: Row(
                         children: [
                           Text(
-                            context.tr(viewAllKey) ?? viewAllKey,
+                            context.tr(seeAllKey) ?? seeAllKey,
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: Colors.blue,
+                              color: Color(0xFF5486F2),
                             ),
                           ),
                           const Icon(
@@ -2459,10 +2487,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         SizedBox(
                           width: constraint.maxWidth * 0.5,
                           child: Text(
-                            '${context.tr(hiKey)!} ${_isGuest ? context.tr('guest')! : _userName}',
+                            '${context.tr(helloKey)!} ${_isGuest ? context.tr('guest')! : _userName.split(' ').first}',
                             maxLines: 1,
-                            style: _boldTextStyle,
                             overflow: TextOverflow.ellipsis,
+                            style: _boldTextStyle.copyWith(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ],
@@ -2483,6 +2514,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                         ),
                       ),
                     ),
+
+                    const Spacer(),
 
                     /// Coins
                     Container(
@@ -2590,36 +2623,36 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                 },
               ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        // currentIndex: _selectedIndex,
-        // onTap: _onItemTapped,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Learn',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.workspace_premium),
-            label: 'Certificates',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.card_giftcard),
-            label: 'Rewards',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   // currentIndex: _selectedIndex,
+      //   // onTap: _onItemTapped,
+      //   selectedItemColor: Theme.of(context).primaryColor,
+      //   unselectedItemColor: Colors.grey,
+      //   backgroundColor: Colors.white,
+      //   type: BottomNavigationBarType.fixed,
+      //   items: const [
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.home),
+      //       label: 'Home',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.menu_book),
+      //       label: 'Learn',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.workspace_premium),
+      //       label: 'Certificates',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.card_giftcard),
+      //       label: 'Rewards',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.person),
+      //       label: 'Profile',
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

@@ -69,7 +69,7 @@ class _SignInScreenState extends State<SignInScreen> {
             state.authProvider != AuthProviders.email) {
           context.read<AuthCubit>().updateAuthDetails(
                 authProvider: state.authProvider,
-            firebaseId: state.user.uid,
+                firebaseId: state.user.uid,
                 authStatus: true,
                 isNewUser: state.isNewUser,
               );
@@ -82,7 +82,8 @@ class _SignInScreenState extends State<SignInScreen> {
           } else {
             context.read<UserDetailsCubit>().fetchUserDetails();
             context.pushNamedAndRemoveUntil(
-              Routes.home,
+              // Routes.home,
+              Routes.bottomNavBar,
               predicate: (_) => false,
             );
           }
@@ -351,7 +352,8 @@ class _SignInScreenState extends State<SignInScreen> {
               //get user detials of signed in user
               await context.read<UserDetailsCubit>().fetchUserDetails();
               await context.pushNamedAndRemoveUntil(
-                Routes.home,
+                // Routes.home,
+                Routes.bottomNavBar,
                 predicate: (_) => false,
               );
             }

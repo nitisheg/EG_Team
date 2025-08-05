@@ -130,7 +130,9 @@ class _SplashScreenState extends State<SplashScreen>
       }
       return;
     }
-    await context.pushReplacementNamed(Routes.home);
+    // await context.pushReplacementNamed(Routes.home);
+    await context.pushReplacementNamed(Routes.bottomNavBar);
+
   }
 
   @override

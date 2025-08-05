@@ -17,6 +17,7 @@ import 'package:flutterquiz/ui/screens/bookmark_screen.dart';
 import 'package:flutterquiz/ui/screens/coin_history_screen.dart';
 import 'package:flutterquiz/ui/screens/exam/exam_screen.dart';
 import 'package:flutterquiz/ui/screens/exam/exams_screen.dart';
+import 'package:flutterquiz/ui/screens/home/bottom_nav_bar.dart';
 import 'package:flutterquiz/ui/screens/home/home_screen.dart';
 import 'package:flutterquiz/ui/screens/home/leaderboard_screen.dart';
 import 'package:flutterquiz/ui/screens/home/setting_screen.dart';
@@ -106,6 +107,7 @@ class Routes {
   static const menuScreen = '/menuScreen';
   static const randomBattle = '/randomBattle';
   static const languageSelect = '/language-select';
+  static const bottomNavBar = '/bottomNavBar';
 
   static String currentRoute = splash;
 
@@ -215,6 +217,8 @@ class Routes {
         return RandomBattleScreen.route(rs);
       case languageSelect:
         return InitialLanguageSelectionScreen.route();
+      case bottomNavBar:
+        return BottomNavScreen.route();
       default:
         return CupertinoPageRoute(builder: (_) => const Scaffold());
     }

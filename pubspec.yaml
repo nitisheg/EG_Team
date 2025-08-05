@@ -73,6 +73,7 @@ flutter:
     - assets/config/emojis/
     - assets/images/
     - assets/sounds/
+    - assets/fonts/
 
   fonts:
     - family: Poppins

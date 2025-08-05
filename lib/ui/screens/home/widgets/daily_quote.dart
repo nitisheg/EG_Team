@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterquiz/commons/widgets/custom_image.dart';
 import 'package:flutterquiz/core/constants/assets_constants.dart';
-import 'package:flutterquiz/features/auth/auth_local_data_source.dart';
 import 'package:intl/intl.dart';
 
 class DailyQuoteScreen extends StatefulWidget {
@@ -16,7 +15,8 @@ class DailyQuoteScreen extends StatefulWidget {
 class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
   final TextEditingController _quoteController = TextEditingController();
   bool _hasSubmitted = false;
-  final PageController _pageController = PageController(viewportFraction: 0.85);
+  // final PageController _pageController = PageController(viewportFraction: 0.85);
+  final PageController _pageController = PageController();
   int _currentPage = 0;
 
   @override
@@ -117,7 +117,8 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
           height: 100,
           child: TextField(
             controller: _quoteController,
-            maxLines: 3,
+            maxLines: 2,
+            maxLength: 100,
             decoration: InputDecoration(
               hintText: 'Enter your quote...',
               hintStyle: const TextStyle(color: Colors.grey),
@@ -173,25 +174,31 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
   }
 
   Widget _buildQuoteCard(String quote, String userName, Timestamp submittedAt) {
+    // final date = submittedAt.toDate();
+    // final now = DateTime.now();
+    //
+    // final isToday =
+    //     date.year == now.year && date.month == now.month && date.day == now.day;
+    //
+    // final dateText = isToday ? 'Today' : DateFormat('dd MMM yyyy').format(date);
+
     final date = submittedAt.toDate();
     final now = DateTime.now();
+    final diff = now.difference(date).inDays;
 
-    final isToday =
-        date.year == now.year && date.month == now.month && date.day == now.day;
-
-    final dateText = isToday
-        ? 'Today'
-        : DateFormat('dd MMM yyyy').format(date); // e.g. 24 Jul 2025
+    String dateText;
+    if (diff == 0) {
+      dateText = 'Today';
+    } else if (diff == 1) {
+      dateText = 'Yesterday';
+    } else {
+      dateText = DateFormat('dd MMM yyyy').format(date);
+    }
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.symmetric(vertical: 1, horizontal: 10),
+      padding: const EdgeInsets.all(10),
       width: double.infinity,
-      // decoration: BoxDecoration(
-      //   color: Colors.blue[50],
-      //   borderRadius: BorderRadius.circular(16),
-      //   border: Border.all(color: Colors.grey.shade300),
-      // ),
       child: Column(
         children: [
           Text(
@@ -204,9 +211,20 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
             ),
           ),
           const SizedBox(height: 12),
-          Text(
-            '$dateText | Submitted by $userName',
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          Text.rich(
+            TextSpan(
+              text: '$dateText | Submitted by ',
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              children: [
+                TextSpan(
+                  text: userName,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
             textAlign: TextAlign.center,
           ),
         ],
@@ -215,19 +233,22 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
   }
 
   Widget _buildDotsIndicator(int count) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        count,
-        (i) => Container(
-          margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-          width: 8,
-          height: 8,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: _currentPage == i
-                ? Theme.of(context).primaryColor
-                : Colors.grey[300],
+    return Padding(
+      padding: const EdgeInsets.only(top: 1),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(
+          count,
+          (i) => Container(
+            margin: const EdgeInsets.symmetric(horizontal: 2),
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _currentPage == i
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey[300],
+            ),
           ),
         ),
       ),
@@ -242,7 +263,7 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
           stream: FirebaseFirestore.instance
               .collection('daily_quotes')
               .orderBy('submittedAt', descending: true)
-              .limit(10)
+              .limit(100)
               .snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -253,7 +274,6 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
             }
 
             final quotes = snapshot.data!.docs;
-
             if (quotes.isEmpty) {
               return const Padding(
                 padding: EdgeInsets.all(32),
@@ -264,7 +284,7 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
             return Column(
               children: [
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.25,
+                  height: MediaQuery.of(context).size.height * 0.15,
                   child: PageView.builder(
                     controller: _pageController,
                     itemCount: quotes.length,
@@ -278,8 +298,9 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
                           final quoteData =
                               quotes[index].data()! as Map<String, dynamic>;
                           final quote = (quoteData['quote'] ?? '') as String;
-                          final userName =
+                          final fullName =
                               (quoteData['userName'] ?? 'Anonymous') as String;
+                          final userName = fullName.split(' ').first;
                           final submittedAt = (quoteData['submittedAt'] ??
                               Timestamp.now()) as Timestamp;
 
@@ -294,13 +315,13 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
             );
           },
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 10),
         ElevatedButton(
           onPressed: _hasSubmitted ? null : _showSubmitDialog,
           style: ElevatedButton.styleFrom(
             backgroundColor: Theme.of(context).primaryColor,
             foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
