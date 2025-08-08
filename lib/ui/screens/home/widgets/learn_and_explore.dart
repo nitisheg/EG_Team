@@ -53,7 +53,7 @@ class LearnAndExploreCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: 12,
-                color: Colors.black87,
+                color: Color(0xFF6C7278), // Gray 600
               ),
             ),
           ],

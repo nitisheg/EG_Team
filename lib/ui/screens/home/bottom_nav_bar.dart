@@ -1,12 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutterquiz/features/auth/auth_repository.dart';
+import 'package:flutterquiz/features/auth/cubits/refer_and_earn_cubit.dart';
 import 'package:flutterquiz/features/profile_management/cubits/delete_account_cubit.dart';
 import 'package:flutterquiz/features/profile_management/cubits/update_user_details_cubit.dart';
 import 'package:flutterquiz/features/profile_management/cubits/upload_profile_cubit.dart';
 import 'package:flutterquiz/features/profile_management/profile_management_repository.dart';
+import 'package:flutterquiz/ui/screens/badges_screen.dart';
 import 'package:flutterquiz/ui/screens/home/home_screen.dart';
 import 'package:flutterquiz/ui/screens/menu/menu_screen.dart';
+import 'package:flutterquiz/ui/screens/profile/create_or_edit_profile_screen.dart';
 import 'package:flutterquiz/ui/screens/rewards/rewards_screen.dart';
 
 class BottomNavScreen extends StatefulWidget {
@@ -54,8 +58,9 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         ValueListenableBuilder<int>(
           valueListenable: _refreshNotifiers[2],
           builder: (context, value, _) {
-            return HomeScreen(
-                key: ValueKey(value)); // If different, change as needed
+            return BadgesScreen(
+              key: ValueKey(value),
+            );
           },
         ),
         ValueListenableBuilder<int>(
@@ -69,20 +74,21 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           builder: (context, value, _) {
             return MultiBlocProvider(
               providers: [
-                BlocProvider<DeleteAccountCubit>(
-                  create: (_) =>
-                      DeleteAccountCubit(ProfileManagementRepository()),
-                ),
                 BlocProvider<UploadProfileCubit>(
                   create: (_) =>
                       UploadProfileCubit(ProfileManagementRepository()),
+                ),
+                BlocProvider<ReferAndEarnCubit>(
+                  create: (_) => ReferAndEarnCubit(AuthRepository()),
                 ),
                 BlocProvider<UpdateUserDetailCubit>(
                   create: (_) =>
                       UpdateUserDetailCubit(ProfileManagementRepository()),
                 ),
               ],
-              child: MenuScreen(key: ValueKey(value)),
+              child: const CreateOrEditProfileScreen(
+                args: CreateOrEditProfileScreenArgs(isNewUser: false),
+              ),
             );
           },
         ),
@@ -100,37 +106,48 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Theme.of(context).primaryColor,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: Colors.white,
-        type: BottomNavigationBarType.fixed,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Learn',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.workspace_premium),
-            label: 'Badges',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.card_giftcard),
-            label: 'Rewards',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        if (_selectedIndex != 0) {
+          setState(() {
+            _selectedIndex = 0;
+          });
+          return false;
+        }
+        return true;
+      },
+      child: Scaffold(
+        body: _screens[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          selectedItemColor: Theme.of(context).primaryColor,
+          unselectedItemColor: Colors.grey,
+          backgroundColor: Colors.white,
+          type: BottomNavigationBarType.fixed,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.menu_book),
+              label: 'Learn',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.workspace_premium),
+              label: 'Badges',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.card_giftcard),
+              label: 'Rewards',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        ),
       ),
     );
   }

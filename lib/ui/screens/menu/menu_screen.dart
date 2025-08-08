@@ -132,16 +132,16 @@ class _MenuScreenState extends State<MenuScreen> {
                       return Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: GestureDetector(
-                              onTap: Navigator.of(context).pop,
-                              child: Icon(
-                                Icons.arrow_back_rounded,
-                                color: Theme.of(context).colorScheme.surface,
-                              ),
-                            ),
-                          ),
+                          // Align(
+                          //   alignment: Alignment.topLeft,
+                          //   child: GestureDetector(
+                          //     onTap: Navigator.of(context).pop,
+                          //     child: Icon(
+                          //       Icons.arrow_back_rounded,
+                          //       color: Theme.of(context).colorScheme.surface,
+                          //     ),
+                          //   ),
+                          // ),
                           Align(
                             alignment: Alignment.topCenter,
                             child: Text(

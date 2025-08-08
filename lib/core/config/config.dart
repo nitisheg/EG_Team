@@ -12,7 +12,7 @@ const packageName = 'com.eglogics.quiz';
 /// Add your database url
 // NOTE: make sure to not add '/' at the end of url
 // NOTE: make sure to check if admin panel is http or https
-const panelUrl = 'https://quiz.eglogics.com/';
+const panelUrl = 'https://quiz.eglogics.com';
 
 /// === Branding ===
 ///

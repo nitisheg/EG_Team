@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutterquiz/commons/commons.dart';
+import 'package:flutterquiz/core/constants/string_labels.dart';
 import 'package:flutterquiz/core/core.dart';
 import 'package:flutterquiz/features/ads/ads.dart';
 import 'package:flutterquiz/features/auth/auth_repository.dart';
@@ -43,7 +44,6 @@ import 'package:flutterquiz/utils/extensions.dart';
 import 'package:flutterquiz/utils/ui_utils.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
-import 'package:lottie/lottie.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -173,7 +173,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
   late final SystemConfigCubit _sysConfigCubit;
   final _quizZoneId =
       UiUtils.getCategoryTypeNumberFromQuizType(QuizTypes.quizZone);
-
 
   @override
   void initState() {
@@ -588,6 +587,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
             'numberOfPlayer': 1,
           },
         );
+        return;
       case 'multiMatch':
         Navigator.of(context).pushNamed(
           Routes.category,
@@ -612,7 +612,6 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           Routes.category,
           arguments: {
             'quizType': QuizTypes.mathMania,
-            'numberOfPlayer': 1,
           },
         );
         return;
@@ -623,14 +622,12 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           Routes.category,
           arguments: {
             'quizType': QuizTypes.guessTheWord,
-            'numberOfPlayer': 1,
           },
         );
         return;
 
       case 'Fun Friday':
-        Navigator.pushNamed(
-          context,
+        Navigator.of(context).pushNamed(
           Routes.category,
           arguments: {
             'quizType': QuizTypes.funAndLearn,
@@ -638,15 +635,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
           },
         );
         return;
-
-      default:
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Unknown quiz type')),
-        );
-        return;
     }
   }
-
   // void _onPressedSelfExam(String index) {
   //   if (_isGuest) {
   //     _showLoginDialog();
@@ -950,8 +940,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                   Positioned(
                     child: Container(
                       margin: const EdgeInsets.symmetric(
-                        vertical: 36,
-                        horizontal: 10,
+                        vertical: 30,
+                        // horizontal: 5,
                       ),
                       padding: const EdgeInsets.all(9),
                       decoration: BoxDecoration(
@@ -976,57 +966,73 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                             width: 148,
                             height: 85,
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 21),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    RichText(
-                                      text: const TextSpan(
-                                        text: 'Daily Task\n',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.black,
-                                          fontSize: 15,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: '14 Questions',
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 14,
-                                            ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const Text(
+                                                    'Daily Task',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.black,
+                                                      fontSize: 15,
+                                                    ),
+                                                  ),
+                                                  const Spacer(),
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      if (_isGuest) {
+                                                        Navigator.pushNamed(
+                                                          context,
+                                                          Routes.login,
+                                                        );
+                                                      } else {
+                                                        Navigator.of(context).pushNamed(
+                                                          Routes.quiz,
+                                                          arguments: {
+                                                            'quizType': QuizTypes.trueAndFalse,
+                                                            'numberOfPlayer': 1,
+                                                          },
+                                                        );
+                                                      }
+                                                    },
+                                                    icon: const QImage(
+                                                      imageUrl: Assets.playIcon,
+                                                      width: 10,
+                                                      height: 10,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              const SizedBox(height: 2),
+                                              const Text(
+                                                '14 Questions',
+                                                style: TextStyle(
+                                                  color: Color(0xFF6C7278),
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    IconButton(
-                                      onPressed: () {
-                                        if (_isGuest) {
-                                          Navigator.pushNamed(
-                                            context,
-                                            Routes.login,
-                                          );
-                                        } else {
-                                          Navigator.of(context).pushNamed(
-                                            Routes.category,
-                                            arguments: {
-                                              'quizType':
-                                                  QuizTypes.trueAndFalse,
-                                              'numberOfPlayer': 1,
-                                            },
-                                          );
-                                        }
-                                      },
-                                      icon: const QImage(
-                                        imageUrl: Assets.playIcon,
-                                        width: 9,
-                                        height: 9,
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
@@ -1045,12 +1051,18 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                   children: [
                                     Text(
                                       'Progress',
-                                      style: TextStyle(fontSize: 12),
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF6C7278),
+                                      ),
                                     ),
                                     Spacer(),
                                     Text(
                                       '9/14',
-                                      style: TextStyle(fontSize: 12),
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF6C7278),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -1417,6 +1429,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                                   ),
                                   SizedBox(height: 4),
@@ -1434,6 +1447,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
+                                  color: Color(0xFF6C7278), // Gray 600
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -1499,6 +1513,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.bold,
+                                      color: Colors.black,
                                     ),
                                   ),
                                   SizedBox(height: 4),
@@ -1517,6 +1532,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
+                                  color: Color(0xFF6C7278), // Gray 600
                                 ),
                               ),
                               const SizedBox(height: 12),
@@ -2519,12 +2535,13 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
                     /// Coins
                     Container(
-                      width: size.width * 0.18,
-                      height: size.height * 0.038,
-                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(11),
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
