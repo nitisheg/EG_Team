@@ -148,10 +148,10 @@ class _RewardsScreenState extends State<RewardsScreen> {
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
         ),
-        leading: QBackButton(
-          removeSnackBars: false,
-          color: colorScheme.surface,
-        ),
+        // leading: QBackButton(
+        //   removeSnackBars: false,
+        //   color: colorScheme.surface,
+        // ),
         title: Text(
           context.tr(rewardsLbl)!,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),

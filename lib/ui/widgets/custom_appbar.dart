@@ -16,7 +16,7 @@ class QAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.bottomHeight = 52,
     this.usePrimaryColor = false,
     this.actions,
-    this.automaticallyImplyLeading = true,
+    this.automaticallyImplyLeading = false,
     this.onTapBackButton,
     this.elevation,
   });

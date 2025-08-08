@@ -184,12 +184,16 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
 
     final date = submittedAt.toDate();
     final now = DateTime.now();
-    final diff = now.difference(date).inDays;
+
+    final dateOnly = DateTime(date.year, date.month, date.day);
+    final nowOnly = DateTime(now.year, now.month, now.day);
+
+    final difference = nowOnly.difference(dateOnly).inDays;
 
     String dateText;
-    if (diff == 0) {
+    if (difference == 0) {
       dateText = 'Today';
-    } else if (diff == 1) {
+    } else if (difference == 1) {
       dateText = 'Yesterday';
     } else {
       dateText = DateFormat('dd MMM yyyy').format(date);
@@ -206,7 +210,7 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontStyle: FontStyle.italic,
-              fontSize: 16,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -214,13 +218,18 @@ class _DailyQuoteScreenState extends State<DailyQuoteScreen> {
           Text.rich(
             TextSpan(
               text: '$dateText | Submitted by ',
-              style: const TextStyle(fontSize: 12, color: Colors.grey),
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w400,
+                color: Color(0xFF6C7278),
+              ),
               children: [
                 TextSpan(
                   text: userName,
                   style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    color: Color(0xFF6C7278),
                   ),
                 ),
               ],

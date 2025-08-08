@@ -1837,7 +1837,8 @@ class _ResultScreenState extends State<ResultScreen> {
     void onTapHomeButton() {
       fetchUpdateUserDetails();
       context.pushNamedAndRemoveUntil(
-        Routes.home,
+        // Routes.home,
+        Routes.bottomNavBar,
         predicate: (_) => false,
       );
     }
