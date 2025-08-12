@@ -982,7 +982,8 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
-                                            children: [
+                                            children:
+                                            [
                                               Row(
                                                 children: [
                                                   const Text(
@@ -2454,121 +2455,140 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80),
-        child: SafeArea(
-          child: Container(
-            margin: EdgeInsets.only(
-              top: _statusBarPadding * .2,
-              left: hzMargin,
-              right: hzMargin,
-            ),
-            width: double.infinity,
-            child: LayoutBuilder(
-              builder: (context, constraint) {
-                final size = MediaQuery.of(context).size;
-                return Row(
-                  children: [
-                    GestureDetector(
-                      onTap: _onTapProfile,
-                      child: Container(
-                        padding: const EdgeInsets.all(3),
-                        width: constraint.maxWidth * 0.15,
-                        height: constraint.maxWidth * 0.15,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onTertiary
-                                .withOpacity(0.3),
-                          ),
-                        ),
-                        child: QImage.circular(imageUrl: _userProfileImg),
-                      ),
-                    ),
-                    SizedBox(width: size.width * .03),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          context.tr(welcome)!,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(
-                          width: constraint.maxWidth * 0.5,
-                          child: Text(
-                            '${context.tr(helloKey)!} ${_isGuest ? context.tr('guest')! : _userName.split(' ').first}',
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: _boldTextStyle.copyWith(
-                              fontSize: 18,
-                              color: Colors.black,
+          child: SafeArea(
+            child: Container(
+              margin: EdgeInsets.only(
+                top: _statusBarPadding * .2,
+                left: hzMargin,
+                right: hzMargin,
+              ),
+              width: double.infinity,
+              child: LayoutBuilder(
+                builder: (context, constraint) {
+                  final size = MediaQuery.of(context).size;
+
+                  return BlocBuilder<UserDetailsCubit, UserDetailsState>(
+                    buildWhen: (previous, current) =>
+                    current is UserDetailsFetchSuccess ||
+                        current is UserDetailsFetchFailure,
+                    builder: (context, state) {
+                      // Defaults for guest or fallback
+                      var profileImg = _userProfileImg;
+                      var userName = _userName;
+                      var userCoins = _userCoins;
+                      var isGuest = _isGuest;
+
+                      if (state is UserDetailsFetchSuccess) {
+                        final user = state.userProfile;
+                        profileImg = user.profileUrl ?? '';
+                        userName = user.name ?? '';
+                        userCoins = user.coins ?? '0';
+                        isGuest = false;
+                      }
+
+                      return Row(
+                        children: [
+                          GestureDetector(
+                            onTap: _onTapProfile,
+                            child: Container(
+                              padding: const EdgeInsets.all(3),
+                              width: constraint.maxWidth * 0.15,
+                              height: constraint.maxWidth * 0.15,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onTertiary
+                                      .withOpacity(0.3),
+                                ),
+                              ),
+                              child: QImage.circular(imageUrl: profileImg),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-
-                    /// Notification Button
-                    SizedBox(
-                      width: size.width * 0.11,
-                      height: size.width * 0.11,
-                      child: IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pushNamed(Routes.notification);
-                        },
-                        icon: QImage(
-                          imageUrl: Assets.notificationAlarmIcon,
-                          width: size.width * 0.08,
-                          height: size.width * 0.08,
-                        ),
-                      ),
-                    ),
-
-                    const Spacer(),
-
-                    /// Coins
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          QImage(
-                            imageUrl: Assets.coins,
-                            width: size.width * 0.04,
-                            height: size.width * 0.03,
+                          SizedBox(width: size.width * .03),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                context.tr(welcome)!,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              SizedBox(
+                                width: constraint.maxWidth * 0.5,
+                                child: Text(
+                                  '${context.tr(helloKey)!} ${isGuest ? context.tr('guest')! : userName.split(' ').first}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: _boldTextStyle.copyWith(
+                                    fontSize: 18,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: 5),
-                          Text(
-                            _userCoins,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: size.width * 0.037,
+                          // Notification Button
+                          SizedBox(
+                            width: size.width * 0.11,
+                            height: size.width * 0.11,
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pushNamed(Routes.notification);
+                              },
+                              icon: QImage(
+                                imageUrl: Assets.notificationAlarmIcon,
+                                width: size.width * 0.08,
+                                height: size.width * 0.08,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          // Coins
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                QImage(
+                                  imageUrl: Assets.coins,
+                                  width: size.width * 0.04,
+                                  height: size.width * 0.03,
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  userCoins,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: size.width * 0.037,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                  ],
-                );
-              },
+                      );
+                    },
+                  );
+                },
+              ),
             ),
-          ),
-        ),
+          )
       ),
       body: SafeArea(
         child: _isGuest
